@@ -1,17 +1,19 @@
 import {IonContent, IonHeader, IonPage, IonTitle, IonToolbar} from '@ionic/react';
 import './Home.css';
-import DragList from "../components/DragList";
+import TodoLists from "../components/TodoLists";
+import React from "react";
 
 const Home: React.FC = () => {
+    const pageStyle = {userSelect: 'none'}
     return (
-        <IonPage>
+        <IonPage style={pageStyle}>
             <IonHeader>
                 <IonToolbar>
                     <IonTitle>{"immortal Todo"}</IonTitle>
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen>
-                <DragList></DragList>
+                <TodoLists></TodoLists>
             </IonContent>
         </IonPage>
     );
