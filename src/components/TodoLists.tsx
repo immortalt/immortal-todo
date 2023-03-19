@@ -18,14 +18,16 @@ const getItems = (count: number): Item[] =>
         order: k
     }));
 
-const reorder = (list: Item[], startIndex: number, endIndex: number): Item[] => {
-    const result = Array.from(list.sort((a, b) => a.order - b.order));
-    const [removed] = result.splice(startIndex, 1);
-    result.splice(endIndex, 0, removed);
+
+// switch the order of the items in the array and return the new array
+const reorder = (list: Item[], source: number, destination: number): Item[] => {
+    const result = Array.from(list);
+    const [removed] = result.splice(source, 1);
+    result.splice(destination, 0, removed);
     // switch the order of the items
-    const temp = result[startIndex].order;
-    result[startIndex].order = result[endIndex].order;
-    result[endIndex].order = temp;
+    const temp = result[source].order;
+    result[source].order = result[destination].order;
+    result[destination].order = temp;
     // TODO: send a request to update the order of the items in the database
     return result;
 };
