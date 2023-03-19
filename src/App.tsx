@@ -1,7 +1,8 @@
-import {Redirect, Route} from 'react-router-dom';
+import {Redirect, Route, Switch} from 'react-router-dom';
 import {IonApp, IonRouterOutlet, setupIonicReact} from '@ionic/react';
 import {IonReactRouter} from '@ionic/react-router';
 import Home from './pages/Home';
+import Search from './pages/Search';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -29,12 +30,20 @@ const App: React.FC = () => (
     <IonApp style={{userSelect: "none"}}>
         <IonReactRouter>
             <IonRouterOutlet>
-                <Route exact path="/home">
-                    <Home/>
-                </Route>
-                <Route exact path="/">
-                    <Redirect to="/home"/>
-                </Route>
+                <Switch>
+                    <Route exact path="/home">
+                        <Home/>
+                    </Route>
+                    <Route exact path="/search">
+                        <Search/>
+                    </Route>
+                    <Route exact path="/">
+                        <Redirect to="/home"/>
+                    </Route>
+                    <Route>
+                        <Redirect to="/"/>
+                    </Route>
+                </Switch>
             </IonRouterOutlet>
         </IonReactRouter>
     </IonApp>

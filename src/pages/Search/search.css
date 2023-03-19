@@ -1,0 +1,20 @@
+.searchbar {
+    height: 40px;
+    width: calc(100% - 19px);
+    border-color: transparent;
+    background-color: transparent;
+}
+
+.searchbar:focus {
+    border-color: transparent;
+    background-color: transparent;
+    outline: none;
+}
+
+.searchbar.ios {
+    margin-left: 15px;
+}
+
+ion-back-button.ios.custom {
+    margin-left: 10px;
+}
