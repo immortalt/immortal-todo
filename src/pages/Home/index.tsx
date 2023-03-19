@@ -22,10 +22,10 @@ import {
 } from 'ionicons/icons';
 import {Divider} from "@mui/material";
 import {RouteComponentProps} from "react-router";
+import {Link} from "react-router-dom";
 
 const preventDefault = (e: any) => e.preventDefault();
 const Home: React.FC<RouteComponentProps> = (props) => {
-    const {history} = props;
     const pageStyle = {userSelect: 'none'}
     return (
         <IonPage style={pageStyle}>
@@ -38,47 +38,41 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                     </IonButtons>
                     <IonTitle>{"Immortal Todo"}</IonTitle>
                     <IonButtons slot="end">
-                        <IonButton routerLink="/search" onTouchEnd={(e) => {
-                            history.push("/search")
-                            e.preventDefault();
-                        }
-                        }>
-                            <IonIcon slot="icon-only" icon={search}></IonIcon>
-                        </IonButton>
+                        <Link to="/search">
+                            <IonButton>
+                                <IonIcon slot="icon-only" icon={search}></IonIcon>
+                            </IonButton>
+                        </Link>
                     </IonButtons>
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen>
-                <IonItem button detail={false}
-                         lines="none" onTouchEnd={(e) => {
-                    e.preventDefault();
-                    // open my day
-                }
-                }>
+                <IonItem routerLink="/search" button detail={false}
+                         lines="none">
                     <IonIcon icon={sunnyOutline} slot="start"></IonIcon>
                     <IonLabel>{"My Day"}</IonLabel>
                     <IonLabel slot="end">{10}</IonLabel>
                 </IonItem>
                 <IonItem button detail={false}
-                         lines="none" onTouchEnd={preventDefault}>
+                         lines="none" routerLink="/search">
                     <IonIcon icon={starOutline} slot="start"></IonIcon>
                     <IonLabel>{"Important"}</IonLabel>
                     <IonLabel slot="end">{10}</IonLabel>
                 </IonItem>
                 <IonItem button detail={false}
-                         lines="none" onTouchEnd={preventDefault}>
+                         lines="none" routerLink="/search">
                     <IonIcon icon={calendarOutline} slot="start"></IonIcon>
                     <IonLabel>{"Planned"}</IonLabel>
                     <IonLabel slot="end">{10}</IonLabel>
                 </IonItem>
                 <IonItem button detail={false}
-                         lines="none" onTouchEnd={preventDefault}>
+                         lines="none" routerLink="/search">
                     <IonIcon icon={checkmarkOutline} slot="start"></IonIcon>
                     <IonLabel>{"Finished"}</IonLabel>
                     <IonLabel slot="end">{10}</IonLabel>
                 </IonItem>
                 <IonItem button detail={false}
-                         lines="none" onTouchEnd={preventDefault}>
+                         lines="none" routerLink="/search">
                     <IonIcon icon={infiniteOutline} slot="start"></IonIcon>
                     <IonLabel>{"Tasks"}</IonLabel>
                     <IonLabel slot="end">{10}</IonLabel>
