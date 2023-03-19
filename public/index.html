@@ -2,8 +2,24 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Ionic App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>Immortal Todo</title>
+    <style>
+      body {
+        touch-action: pan-x pan-y;
+      }
+    </style>
+    <script>
+      document.addEventListener('touchstart', function (event) {
+        if (event.touches.length > 1) {
+          event.preventDefault();
+        }
+      }, { passive: false });
 
+      document.addEventListener('gesturestart', function (event) {
+        event.preventDefault();
+      });
+    </script>
     <base href="/" />
 
     <meta name="color-scheme" content="light dark" />
@@ -20,7 +36,7 @@
 
     <!-- add to homescreen for ios -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-title" content="Ionic App" />
+    <meta name="apple-mobile-web-app-title" content="Immortal Todo" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   </head>
 
