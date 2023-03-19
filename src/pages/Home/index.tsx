@@ -2,6 +2,8 @@ import {IonButton, IonButtons, IonContent, IonHeader, IonIcon, IonPage, IonTitle
 import TodoLists from "../../components/TodoLists";
 import React from "react";
 import {personCircle, search} from 'ionicons/icons';
+import QuickLists from "../../components/QuickLists";
+import {Divider} from "@mui/material";
 
 const Home: React.FC = () => {
     const pageStyle = {userSelect: 'none'}
@@ -23,6 +25,8 @@ const Home: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen>
+                <QuickLists></QuickLists>
+                <Divider style={{marginLeft: 16, marginRight: 16, marginTop: 10, marginBottom: 10}}></Divider>
                 <TodoLists></TodoLists>
             </IonContent>
         </IonPage>
