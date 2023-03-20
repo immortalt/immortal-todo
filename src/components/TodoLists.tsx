@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {DragDropContext, Draggable} from "react-beautiful-dnd";
 import {StrictModeDroppable} from "./StrictModeDroppable";
-import {IonItem, IonLabel} from "@ionic/react";
+import {IonItem, IonLabel, isPlatform} from "@ionic/react";
 
 interface Item {
     id: string;
@@ -32,11 +32,6 @@ const reorder = (list: Item[], source: number, destination: number): Item[] => {
     return result;
 };
 
-const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
-    userSelect: "none",
-    cursor: "default",
-    ...draggableStyle
-});
 
 const getListStyle = (isDraggingOver: boolean) => ({
     width: "100%",
@@ -45,6 +40,16 @@ const getListStyle = (isDraggingOver: boolean) => ({
 
 const TodoLists: React.FC = () => {
     const [items, setItems] = useState<Item[]>(getItems(20));
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const isDark = prefersDark.matches;
+
+    const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
+        userSelect: "none",
+        cursor: "default",
+        "--background-activated": isDark ? "var(--ion-color-dark-shade)" : "var(--ion-color-light-shade)",
+        ...draggableStyle
+    });
+
     const onDragEnd = (result: any) => {
         if (!result.destination) {
             return;
@@ -73,10 +78,11 @@ const TodoLists: React.FC = () => {
                                 {(provided, snapshot) => (
                                     <IonItem button detail={false} ref={provided.innerRef}
                                              {...provided.draggableProps}
-                                             {...provided.dragHandleProps} style={getItemStyle(
-                                        snapshot.isDragging,
-                                        provided.draggableProps.style
-                                    )}
+                                             {...provided.dragHandleProps}
+                                             style={getItemStyle(
+                                                 snapshot.isDragging,
+                                                 provided.draggableProps.style
+                                             )}
                                              lines="none"
                                              color={snapshot.isDragging ? "light" : ""}
                                     >

@@ -30,6 +30,7 @@ setupIonicReact();
 const darkTheme = createTheme({
     palette: {
         mode: 'dark',
+        divider:"#080808"
     },
 });
 const lightTheme = createTheme({
