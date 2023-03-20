@@ -27,11 +27,17 @@ const Home: React.FC<RouteComponentProps> = () => {
     const isDark = prefersDark.matches;
     const itemStyle = {
         "--background-activated": isDark ? "var(--ion-color-dark-shade)" : "var(--ion-color-light-shade)",
+        "--min-height": "48px"
+    }
+    const styles = {
+        toolbar: {
+            "--background": "var(--ion-background-color)"
+        }
     }
     return (
         <IonPage style={pageStyle}>
             <IonHeader className="ion-no-border">
-                <IonToolbar>
+                <IonToolbar style={styles.toolbar}>
                     <IonButtons slot="start">
                         <IonButton onTouchEnd={preventDefault}>
                             <IonIcon slot="icon-only" icon={personCircle}></IonIcon>

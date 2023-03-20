@@ -51,16 +51,17 @@ const TaskItems: React.FC<TaskItemsProps> = ({theme}) => {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
     const isDark = prefersDark.matches;
 
-    const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
-        userSelect: "none",
-        cursor: "default",
-        "--background-activated": isDark ? "var(--ion-color-dark-shade)" : "var(--ion-color-light-shade)",
-        "--background": isDark ? "#212121" : "white",
-        "--min-height": "65px",
-        borderRadius: 10,
-        marginBottom: 5,
-        ...draggableStyle
-    });
+    const getItemStyle = (isDragging: boolean, draggableStyle: any) => {
+        return {
+            userSelect: "none",
+            cursor: "default",
+            "--background": isDark ? "#212121" : "white",
+            "--min-height": "65px",
+            "--border-radius": "10px",
+            marginBottom: 5,
+            ...draggableStyle,
+        }
+    };
 
     const onDragEnd = (result: any) => {
         if (!result.destination) {
@@ -90,7 +91,7 @@ const TaskItems: React.FC<TaskItemsProps> = ({theme}) => {
     }
 
     return (
-        <DragDropContext  onDragEnd={onDragEnd}>
+        <DragDropContext onDragEnd={onDragEnd}>
             <StrictModeDroppable droppableId="droppable">
                 {(provided, snapshot) => (
                     <div
@@ -99,7 +100,7 @@ const TaskItems: React.FC<TaskItemsProps> = ({theme}) => {
                         style={getListStyle(snapshot.isDraggingOver)}
                     >
                         {items.map((item, index) => (
-                            <Draggable  key={item.id} draggableId={item.id} index={index}>
+                            <Draggable key={item.id} draggableId={item.id} index={index}>
                                 {(provided, snapshot) => (
                                     <IonItem button detail={false} ref={provided.innerRef}
                                              {...provided.draggableProps}
