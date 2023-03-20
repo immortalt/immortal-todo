@@ -1,6 +1,6 @@
 .searchbar {
     height: 40px;
-    width: calc(100% - 19px);
+    width: calc(100% - 14px);
     border-color: transparent;
     background-color: transparent;
 }
@@ -12,7 +12,7 @@
 }
 
 .searchbar.ios {
-    margin-left: 15px;
+    margin-left: 10px;
 }
 
 ion-back-button.ios.custom {

@@ -12,7 +12,7 @@ import {
 import TodoLists from "../../components/TodoLists";
 import React from "react";
 import {
-    calendarOutline,
+    calendarOutline, checkmarkCircleOutline,
     checkmarkOutline,
     infiniteOutline,
     personCircle,
@@ -47,32 +47,32 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen>
-                <IonItem routerLink="/search" button detail={false}
+                <IonItem routerLink="/todo/today" button detail={false}
                          lines="none">
                     <IonIcon icon={sunnyOutline} slot="start"></IonIcon>
                     <IonLabel>{"My Day"}</IonLabel>
                     <IonLabel slot="end">{10}</IonLabel>
                 </IonItem>
                 <IonItem button detail={false}
-                         lines="none" routerLink="/search">
+                         lines="none" routerLink="/todo/important">
                     <IonIcon icon={starOutline} slot="start"></IonIcon>
                     <IonLabel>{"Important"}</IonLabel>
                     <IonLabel slot="end">{10}</IonLabel>
                 </IonItem>
                 <IonItem button detail={false}
-                         lines="none" routerLink="/search">
+                         lines="none" routerLink="/todo/planned">
                     <IonIcon icon={calendarOutline} slot="start"></IonIcon>
                     <IonLabel>{"Planned"}</IonLabel>
                     <IonLabel slot="end">{10}</IonLabel>
                 </IonItem>
                 <IonItem button detail={false}
-                         lines="none" routerLink="/search">
-                    <IonIcon icon={checkmarkOutline} slot="start"></IonIcon>
+                         lines="none" routerLink="/todo/finished">
+                    <IonIcon icon={checkmarkCircleOutline} slot="start"></IonIcon>
                     <IonLabel>{"Finished"}</IonLabel>
                     <IonLabel slot="end">{10}</IonLabel>
                 </IonItem>
                 <IonItem button detail={false}
-                         lines="none" routerLink="/search">
+                         lines="none" routerLink="/todo/tasks">
                     <IonIcon icon={infiniteOutline} slot="start"></IonIcon>
                     <IonLabel>{"Tasks"}</IonLabel>
                     <IonLabel slot="end">{10}</IonLabel>

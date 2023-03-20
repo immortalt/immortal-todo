@@ -1,4 +1,4 @@
-import React, { useState, useCallback} from 'react';
+import React, {useState, useCallback} from 'react';
 import {
     IonContent,
     IonHeader,
@@ -8,8 +8,7 @@ import {
     IonBackButton,
     IonItem, IonList,
 } from '@ionic/react';
-import {arrowBackOutline} from "ionicons/icons";
-import "./search.css";
+import "./index.css";
 import {isPlatform} from "@ionic/react";
 
 // A hack to enable the keyboard to open on mobile devices, especially iOS
@@ -61,9 +60,8 @@ const Search: React.FC = () => {
             <IonHeader>
                 <IonToolbar>
                     <IonButtons slot="start" style={{height: 44,}}>
-                        <IonBackButton class="custom"
-                                       text="" defaultHref="/home"
-                                       icon={arrowBackOutline}></IonBackButton>
+                        <IonBackButton defaultHref="/home"
+                        ></IonBackButton>
                     </IonButtons>
                     <input className={isIOS ? "searchbar ios" : "searchbar"} type="text" defaultValue=""
                            placeholder="Search" autoFocus
