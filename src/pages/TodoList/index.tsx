@@ -8,7 +8,7 @@ import {
     IonTitle,
     IonToolbar, isPlatform
 } from '@ionic/react';
-import React from "react";
+import React, {useEffect} from "react";
 import {
     checkmarkCircleOutline,
     ellipsisHorizontal, ellipsisVertical,
@@ -22,6 +22,7 @@ import "./index.css";
 import DelayDisplay from "../../components/DelayDisplay";
 import {listThemes, ListTheme} from "../../theme/listThemes";
 import TaskItems from "../../components/TaskItems";
+import {setStatusbarColor} from "../../theme/utils";
 
 interface TodoPageProps
     extends RouteComponentProps<{
@@ -44,6 +45,9 @@ const TodoList: React.FC<TodoPageProps> = ({match}) => {
     const isDark = prefersDark.matches;
     const listTheme: ListTheme = listThemes[theme];
     const themeUnit = isDark ? listTheme.dark : listTheme.light;
+    useEffect(() => {
+        setStatusbarColor(themeUnit.background);
+    }, [])
     const styles = {
         header: {
             backgroundColor: themeUnit.background,

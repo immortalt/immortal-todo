@@ -10,7 +10,7 @@ import {
     IonToolbar
 } from '@ionic/react';
 import TodoLists from "../../components/TodoLists";
-import React from "react";
+import React, {useEffect} from "react";
 import {
     personCircle,
     search,
@@ -19,6 +19,7 @@ import {Divider} from "@mui/material";
 import {RouteComponentProps} from "react-router";
 import {Link} from "react-router-dom";
 import quickLists from "../../theme/quickLists";
+import {setStatusbarColor} from "../../theme/utils";
 
 const preventDefault = (e: any) => e.preventDefault();
 const Home: React.FC<RouteComponentProps> = () => {
@@ -34,6 +35,9 @@ const Home: React.FC<RouteComponentProps> = () => {
             "--background": "var(--ion-background-color)"
         }
     }
+    useEffect(() => {
+        setStatusbarColor(isDark ? "#080808" : "#ffffff");
+    }, [])
     return (
         <IonPage style={pageStyle}>
             <IonHeader className="ion-no-border">
@@ -59,9 +63,20 @@ const Home: React.FC<RouteComponentProps> = () => {
                     return (
                         <IonItem key={id} style={itemStyle} routerLink={`/todo/${id}/${theme}`} button detail={false}
                                  lines="none">
-                            <IonIcon style={{color: color}} icon={icon} slot="start"></IonIcon>
-                            <IonLabel>{title}</IonLabel>
-                            <IonLabel slot="end">{count}</IonLabel>
+                            <IonIcon style={{
+                                color: color,
+                                marginLeft: -3.5,
+                                marginRight: 17.5,
+                                fontSize: 22,
+                                "--ionicon-stroke-width": "45px"
+                            }} icon={icon}
+                                     slot="start"></IonIcon>
+                            <IonLabel
+                                style={{fontWeight: 500, color: isDark ? "#E1E1E1" : "#34373C"}}>{title}</IonLabel>
+                            <IonLabel style={{
+                                color: isDark ? "#939393" : "#767678",
+                                fontSize: 15
+                            }} slot="end">{count}</IonLabel>
                         </IonItem>)
                 })}
                 <Divider style={{marginLeft: 16, marginRight: 16, marginTop: 10, marginBottom: 10}}></Divider>
