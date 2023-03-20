@@ -13,7 +13,6 @@ import TodoLists from "../../components/TodoLists";
 import React from "react";
 import {
     calendarOutline, checkmarkCircleOutline,
-    checkmarkOutline,
     infiniteOutline,
     personCircle,
     search,

@@ -51,7 +51,7 @@ const TodoPage: React.FC<TodoPageProps> = ({match}) => {
     const title = getTitle(id);
     return (
         <>
-            <IonHeader mode="ios" translucent={true}>
+            <IonHeader mode="ios">
                 <IonToolbar mode="md">
                     <IonButtons slot="start" style={{height: 44}}>
                         <IonBackButton defaultHref="/home" text={isIOS ? "Lists" : ""}></IonBackButton>

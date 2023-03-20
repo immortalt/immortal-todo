@@ -24,27 +24,41 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import React from "react";
 import TodoPage from "./pages/TodoList";
+import {ThemeProvider, createTheme} from '@mui/material/styles';
 
 setupIonicReact();
-
-const App: React.FC = () => (
-    <IonApp style={{userSelect: "none"}}>
-        <IonReactRouter>
-            <IonRouterOutlet>
-                <Switch>
-                    <Route exact path="/home" component={Home}/>
-                    <Route exact path="/search" component={Search}/>
-                    <Route exact path="/todo/:id" component={TodoPage}/>
-                    <Route exact path="/">
-                        <Redirect to="/home"/>
-                    </Route>
-                    <Route>
-                        <Redirect to="/"/>
-                    </Route>
-                </Switch>
-            </IonRouterOutlet>
-        </IonReactRouter>
-    </IonApp>
-);
+const darkTheme = createTheme({
+    palette: {
+        mode: 'dark',
+    },
+});
+const lightTheme = createTheme({
+    palette: {
+        mode: 'light',
+    },
+});
+const App: React.FC = () => {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const isDark = prefersDark.matches;
+    return (<ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+        <IonApp style={{userSelect: "none"}}>
+            <IonReactRouter>
+                <IonRouterOutlet>
+                    <Switch>
+                        <Route exact path="/home" component={Home}/>
+                        <Route exact path="/search" component={Search}/>
+                        <Route exact path="/todo/:id" component={TodoPage}/>
+                        <Route exact path="/">
+                            <Redirect to="/home"/>
+                        </Route>
+                        <Route>
+                            <Redirect to="/"/>
+                        </Route>
+                    </Switch>
+                </IonRouterOutlet>
+            </IonReactRouter>
+        </IonApp>
+    </ThemeProvider>)
+};
 
 export default App;
