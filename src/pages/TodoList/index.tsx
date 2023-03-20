@@ -8,7 +8,6 @@ import {
     IonTitle,
     IonToolbar, isPlatform
 } from '@ionic/react';
-import TodoLists from "../../components/TodoLists";
 import React from "react";
 import {
     checkmarkCircleOutline,
@@ -21,16 +20,18 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import "./index.css";
 import DelayDisplay from "../../components/DelayDisplay";
+import {listThemes, ListTheme} from "../../theme/listThemes";
+import TaskItems from "../../components/TaskItems";
 
 interface TodoPageProps
     extends RouteComponentProps<{
         id: string;
+        theme: string;
     }> {
 }
 
-
-const TodoPage: React.FC<TodoPageProps> = ({match}) => {
-    const {id} = match.params;
+const TodoList: React.FC<TodoPageProps> = ({match}) => {
+    const {id, theme = "green"} = match.params;
     const isIOS = isPlatform("ios");
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -39,32 +40,62 @@ const TodoPage: React.FC<TodoPageProps> = ({match}) => {
     const handleClose = () => {
         setAnchorEl(null);
     }
-
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const isDark = prefersDark.matches;
+    const listTheme: ListTheme = listThemes[theme];
+    const themeUnit = isDark ? listTheme.dark : listTheme.light;
+    const styles = {
+        header: {
+            backgroundColor: themeUnit.background,
+            color: themeUnit.text,
+            "--background": themeUnit.background,
+            "--color": themeUnit.text,
+        },
+        contentHeader: {
+            backgroundColor: themeUnit.background,
+            color: themeUnit.text,
+            "--background": themeUnit.background,
+            "--color": themeUnit.text,
+            "--min-height": id === "myday" ? "65px" : "40px"
+        },
+        toolbar: {
+            "--background": themeUnit.background,
+            "--color": themeUnit.text,
+        },
+        iconButton: {color: themeUnit.text},
+        content: {"--background": themeUnit.background},
+    }
     const getTitle = (id: string) => {
-        if (id === "today") {
-            return <>
+        if (id === "myday") {
+            return <div style={styles.header}>
                 <div className="today">My Day</div>
                 <div className="today-date">{new Date().toLocaleDateString()}</div>
-            </>;
+            </div>;
         }
         return <div>{id}</div>;
     }
     const title = getTitle(id);
     return (
         <>
-            <IonHeader mode="ios">
-                <IonToolbar mode={isIOS ? 'ios' : 'md'}>
-                    <IonButtons slot="start" style={{height: 44}}>
-                        <IonBackButton defaultHref="/home" text={isIOS ? "Lists" : ""}></IonBackButton>
+            <IonHeader mode="ios" className="ion-no-border" style={styles.header}>
+                <IonToolbar mode={isIOS ? 'ios' : 'md'} style={styles.toolbar}>
+                    <IonButtons slot="start">
+                        <IonBackButton style={styles.iconButton} defaultHref="/home"
+                                       text={isIOS ? "Lists" : ""}></IonBackButton>
                     </IonButtons>
-                    <IonTitle className="page-header"><DelayDisplay>{title}</DelayDisplay></IonTitle>
+                    <IonTitle style={styles.header}
+                              className="page-header">
+                        <DelayDisplay>{title}</DelayDisplay>
+                    </IonTitle>
                     <IonButtons slot="end">
                         <IonButton
+                            color={themeUnit.text}
+                            style={styles.iconButton}
                             aria-label="account of current user"
                             aria-controls="menu-appbar"
                             aria-haspopup="true"
                             onClick={handleMenu}
-                            color="inherit">
+                        >
                             <IonIcon slot="icon-only" ios={ellipsisHorizontal} md={ellipsisVertical}
                                      onClick={handleMenu}></IonIcon>
                         </IonButton>
@@ -99,16 +130,17 @@ const TodoPage: React.FC<TodoPageProps> = ({match}) => {
                     </Menu>
                 </IonToolbar>
             </IonHeader>
-            <IonContent fullscreen>
-                <IonHeader className="content-header" mode="ios" collapse="condense">
-                    <IonToolbar mode="ios" style={{"--min-height": id === "today" ? "65px" : "40px"}}>
+            <IonContent fullscreen style={styles.content}>
+                <IonHeader style={styles.header} className="ion-no-border content-header" mode="ios"
+                           collapse="condense">
+                    <IonToolbar mode="ios" style={styles.contentHeader}>
                         <IonTitle size="large">{title}</IonTitle>
                     </IonToolbar>
                 </IonHeader>
-                <TodoLists></TodoLists>
+                <TaskItems theme={listTheme}></TaskItems>
             </IonContent>
         </>
     );
 };
 
-export default TodoPage;
+export default TodoList;

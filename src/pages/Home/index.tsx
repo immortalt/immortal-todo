@@ -14,15 +14,14 @@ import React from "react";
 import {
     personCircle,
     search,
-    sunnyOutline
 } from 'ionicons/icons';
 import {Divider} from "@mui/material";
 import {RouteComponentProps} from "react-router";
 import {Link} from "react-router-dom";
-import quickLists from "./quickLists";
+import quickLists from "../../theme/quickLists";
 
 const preventDefault = (e: any) => e.preventDefault();
-const Home: React.FC<RouteComponentProps> = (props) => {
+const Home: React.FC<RouteComponentProps> = () => {
     const pageStyle = {userSelect: 'none'};
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
     const isDark = prefersDark.matches;
@@ -31,7 +30,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
     }
     return (
         <IonPage style={pageStyle}>
-            <IonHeader>
+            <IonHeader className="ion-no-border">
                 <IonToolbar>
                     <IonButtons slot="start">
                         <IonButton onTouchEnd={preventDefault}>
@@ -49,14 +48,15 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen>
-                {quickLists.map((item, index) => {
-                    const {id, title, color, count, icon} = item;
-                    return (<IonItem key={id} style={itemStyle} routerLink="/todo/today" button detail={false}
-                                     lines="none">
-                        <IonIcon style={{color: color}} icon={icon} slot="start"></IonIcon>
-                        <IonLabel>{title}</IonLabel>
-                        <IonLabel slot="end">{count}</IonLabel>
-                    </IonItem>)
+                {quickLists.map((item) => {
+                    const {id, title, color, count, icon, theme} = item;
+                    return (
+                        <IonItem key={id} style={itemStyle} routerLink={`/todo/${id}/${theme}`} button detail={false}
+                                 lines="none">
+                            <IonIcon style={{color: color}} icon={icon} slot="start"></IonIcon>
+                            <IonLabel>{title}</IonLabel>
+                            <IonLabel slot="end">{count}</IonLabel>
+                        </IonItem>)
                 })}
                 <Divider style={{marginLeft: 16, marginRight: 16, marginTop: 10, marginBottom: 10}}></Divider>
                 <TodoLists></TodoLists>

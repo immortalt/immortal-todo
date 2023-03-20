@@ -23,7 +23,7 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import React from "react";
-import TodoPage from "./pages/TodoList";
+import TodoList from "./pages/TodoList";
 import {ThemeProvider, createTheme} from '@mui/material/styles';
 
 setupIonicReact();
@@ -52,7 +52,7 @@ const App: React.FC = () => {
                     <Switch>
                         <Route exact path="/home" component={Home}/>
                         <Route exact path="/search" component={Search}/>
-                        <Route exact path="/todo/:id" component={TodoPage}/>
+                        <Route exact path="/todo/:id/:theme" component={TodoList}/>
                         <Route exact path="/">
                             <Redirect to="/home"/>
                         </Route>

@@ -1,7 +1,10 @@
 import React, {useState} from "react";
 import {DragDropContext, Draggable} from "react-beautiful-dnd";
-import {StrictModeDroppable} from "./StrictModeDroppable";
-import {IonItem, IonLabel,} from "@ionic/react";
+import {StrictModeDroppable} from "../StrictModeDroppable";
+import {IonIcon, IonItem, IonLabel, IonRadio,} from "@ionic/react";
+import {starOutline} from "ionicons/icons";
+import "./index.css"
+import {ListTheme} from "../../theme/listThemes";
 
 interface Item {
     id: string;
@@ -36,9 +39,14 @@ const reorder = (list: Item[], source: number, destination: number): Item[] => {
 const getListStyle = (isDraggingOver: boolean) => ({
     width: "100%",
     cursor: "default",
+    paddingLeft: 10,
+    paddingRight: 10,
 });
 
-const TodoLists: React.FC = () => {
+type TaskItemsProps = {
+    theme: ListTheme
+}
+const TaskItems: React.FC<TaskItemsProps> = ({theme}) => {
     const [items, setItems] = useState<Item[]>(getItems(20));
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
     const isDark = prefersDark.matches;
@@ -47,6 +55,10 @@ const TodoLists: React.FC = () => {
         userSelect: "none",
         cursor: "default",
         "--background-activated": isDark ? "var(--ion-color-dark-shade)" : "var(--ion-color-light-shade)",
+        "--background": isDark ? "#212121" : "white",
+        "--min-height": "65px",
+        borderRadius: 10,
+        marginBottom: 5,
         ...draggableStyle
     });
 
@@ -63,6 +75,19 @@ const TodoLists: React.FC = () => {
 
         setItems(reorderedItems);
     };
+    const themeUnit = isDark ? theme.dark : theme.light;
+    const radioColor = isDark ? themeUnit.text : themeUnit.background;
+    const styles = {
+        star: {
+            fontSize: 20,
+            color: "var(--ion-color-medium)"
+        },
+        radio: {
+            "--color-checked": "black",
+            border: `2px solid ${radioColor}`,
+            backgroundColor: radioColor,
+        }
+    }
 
     return (
         <DragDropContext onDragEnd={onDragEnd}>
@@ -86,8 +111,21 @@ const TodoLists: React.FC = () => {
                                              lines="none"
                                              color={snapshot.isDragging ? "light" : ""}
                                     >
-                                        <IonLabel>{item.title}</IonLabel>
-                                        <IonLabel slot="end">{item.count}</IonLabel>
+                                        <IonRadio mode="ios" value="custom" slot="start"
+                                                  style={styles.radio}></IonRadio>
+                                        <IonLabel>
+                                            <div>
+                                                <div style={{fontWeight: "bold"}}>
+                                                    {item.title}
+                                                </div>
+                                                <div>
+                                                    {item.title}
+                                                </div>
+                                            </div>
+                                        </IonLabel>
+                                        <IonLabel slot="end">
+                                            <IonIcon style={styles.star} icon={starOutline}></IonIcon>
+                                        </IonLabel>
                                     </IonItem>
                                 )}
                             </Draggable>
@@ -100,4 +138,4 @@ const TodoLists: React.FC = () => {
     );
 };
 
-export default TodoLists;
+export default TaskItems;

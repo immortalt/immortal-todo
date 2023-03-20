@@ -1,0 +1,8 @@
+ion-radio.ios {
+    width: 25px;
+    height: 25px;
+    border: 2px solid #ddd;
+    border-radius: 45px;
+    border-color: var(--ion-color-medium);
+    margin-right: 16px;
+}
