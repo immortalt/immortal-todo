@@ -5,28 +5,18 @@ import {
     IonContent,
     IonHeader,
     IonIcon,
-    IonItem, IonLabel, IonList,
-    IonPage,
     IonTitle,
     IonToolbar, isPlatform
 } from '@ionic/react';
 import TodoLists from "../../components/TodoLists";
 import React from "react";
 import {
-    arrowBackOutline,
-    calendarOutline, checkmarkCircleOutline,
-    checkmarkOutline, ellipsisHorizontal, ellipsisVertical,
-    infiniteOutline,
-    personCircle,
-    search,
-    starOutline,
-    sunnyOutline, trashOutline
+    checkmarkCircleOutline,
+    ellipsisHorizontal, ellipsisVertical,
+    trashOutline
 } from 'ionicons/icons';
-import {Divider, IconButton, Menu, MenuItem} from "@mui/material";
+import {Menu, MenuItem} from "@mui/material";
 import {RouteComponentProps} from "react-router";
-import {Link} from "react-router-dom";
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import CheckCircle from '@mui/icons-material/CheckCircle';
 import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import "./index.css";
@@ -37,15 +27,10 @@ interface TodoPageProps
     }> {
 }
 
-const getTitle = (id: string) => {
-    if (id === "today") return "Today";
-    return "Todo Page";
-}
 
 const TodoPage: React.FC<TodoPageProps> = ({match}) => {
     const {id} = match.params;
     const isIOS = isPlatform("ios");
-    const title = getTitle(id);
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -53,6 +38,17 @@ const TodoPage: React.FC<TodoPageProps> = ({match}) => {
     const handleClose = () => {
         setAnchorEl(null);
     }
+
+    const getTitle = (id: string) => {
+        if (id === "today") {
+            return <>
+                <div className="today">My Day</div>
+                <div className="today-date">{new Date().toLocaleDateString()}</div>
+            </>;
+        }
+        return id;
+    }
+    const title = getTitle(id);
     return (
         <>
             <IonHeader mode="ios" translucent={true}>
@@ -60,7 +56,7 @@ const TodoPage: React.FC<TodoPageProps> = ({match}) => {
                     <IonButtons slot="start" style={{height: 44}}>
                         <IonBackButton defaultHref="/home" text={isIOS ? "Lists" : ""}></IonBackButton>
                     </IonButtons>
-                    <IonTitle>{title}</IonTitle>
+                    <IonTitle className="page-header">{title}</IonTitle>
                     <IonButtons slot="end">
                         <IonButton
                             aria-label="account of current user"
@@ -103,8 +99,8 @@ const TodoPage: React.FC<TodoPageProps> = ({match}) => {
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen>
-                <IonHeader style={{display: "block"}} mode="ios" collapse="condense">
-                    <IonToolbar mode="ios">
+                <IonHeader className="content-header" mode="ios" collapse="condense">
+                    <IonToolbar mode="ios" style={{"--min-height": id === "today" ? "65px" : "40px"}}>
                         <IonTitle size="large">{title}</IonTitle>
                     </IonToolbar>
                 </IonHeader>

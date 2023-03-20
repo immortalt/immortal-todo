@@ -1,4 +1,3 @@
-
 .todo-side-menu ul {
     padding: 0;
 }
@@ -16,7 +15,42 @@
     margin-left: -2px;
 }
 
-.todo-side-menu ion-icon{
+.todo-side-menu ion-icon {
     font-size: 22px;
     --ionicon-stroke-width: 40px;
+}
+
+.content-header {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.content-header ion-toolbar {
+    display: block;
+}
+
+.content-header ion-title {
+    display: block;
+}
+
+.content-header .today {
+    font-size: 32px;
+}
+
+.content-header .today-date {
+    margin-top: 3px;
+    font-size: 20px;
+    font-weight: normal;
+}
+
+.page-header {
+    display: block;
+}
+
+.page-header .today {
+    font-size: 20px;
+}
+
+.page-header .today-date {
+    display: none;
 }
