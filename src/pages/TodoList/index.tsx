@@ -20,6 +20,7 @@ import {RouteComponentProps} from "react-router";
 import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import "./index.css";
+import DelayDisplay from "../../components/DelayDisplay";
 
 interface TodoPageProps
     extends RouteComponentProps<{
@@ -46,7 +47,7 @@ const TodoPage: React.FC<TodoPageProps> = ({match}) => {
                 <div className="today-date">{new Date().toLocaleDateString()}</div>
             </>;
         }
-        return id;
+        return <div>{id}</div>;
     }
     const title = getTitle(id);
     return (
@@ -56,7 +57,7 @@ const TodoPage: React.FC<TodoPageProps> = ({match}) => {
                     <IonButtons slot="start" style={{height: 44}}>
                         <IonBackButton defaultHref="/home" text={isIOS ? "Lists" : ""}></IonBackButton>
                     </IonButtons>
-                    <IonTitle className="page-header">{title}</IonTitle>
+                    <IonTitle className="page-header"><DelayDisplay>{title}</DelayDisplay></IonTitle>
                     <IonButtons slot="end">
                         <IonButton
                             aria-label="account of current user"
