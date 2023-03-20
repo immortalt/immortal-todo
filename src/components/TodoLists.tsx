@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {DragDropContext, Draggable} from "react-beautiful-dnd";
+import {DragDropContext, Draggable} from "./react-beautiful-dnd";
 import {StrictModeDroppable} from "./StrictModeDroppable";
 import {IonItem, IonLabel,} from "@ionic/react";
 

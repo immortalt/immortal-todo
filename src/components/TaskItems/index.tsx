@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {DragDropContext, Draggable} from "react-beautiful-dnd";
+import {DragDropContext, Draggable} from "../react-beautiful-dnd";
 import {StrictModeDroppable} from "../StrictModeDroppable";
 import {IonIcon, IonItem, IonLabel, IonRadio,} from "@ionic/react";
 import {starOutline} from "ionicons/icons";
@@ -90,7 +90,7 @@ const TaskItems: React.FC<TaskItemsProps> = ({theme}) => {
     }
 
     return (
-        <DragDropContext onDragEnd={onDragEnd}>
+        <DragDropContext  onDragEnd={onDragEnd}>
             <StrictModeDroppable droppableId="droppable">
                 {(provided, snapshot) => (
                     <div
@@ -99,7 +99,7 @@ const TaskItems: React.FC<TaskItemsProps> = ({theme}) => {
                         style={getListStyle(snapshot.isDraggingOver)}
                     >
                         {items.map((item, index) => (
-                            <Draggable key={item.id} draggableId={item.id} index={index}>
+                            <Draggable  key={item.id} draggableId={item.id} index={index}>
                                 {(provided, snapshot) => (
                                     <IonItem button detail={false} ref={provided.innerRef}
                                              {...provided.draggableProps}
