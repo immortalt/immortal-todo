@@ -12,20 +12,23 @@ import {
 import TodoLists from "../../components/TodoLists";
 import React from "react";
 import {
-    calendarOutline, checkmarkCircleOutline,
-    infiniteOutline,
     personCircle,
     search,
-    starOutline,
     sunnyOutline
 } from 'ionicons/icons';
 import {Divider} from "@mui/material";
 import {RouteComponentProps} from "react-router";
 import {Link} from "react-router-dom";
+import quickLists from "./quickLists";
 
 const preventDefault = (e: any) => e.preventDefault();
 const Home: React.FC<RouteComponentProps> = (props) => {
-    const pageStyle = {userSelect: 'none'}
+    const pageStyle = {userSelect: 'none'};
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const isDark = prefersDark.matches;
+    const itemStyle = {
+        "--background-activated": isDark ? "var(--ion-color-dark-shade)" : "var(--ion-color-light-shade)",
+    }
     return (
         <IonPage style={pageStyle}>
             <IonHeader>
@@ -46,36 +49,15 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                 </IonToolbar>
             </IonHeader>
             <IonContent fullscreen>
-                <IonItem routerLink="/todo/today" button detail={false}
-                         lines="none">
-                    <IonIcon icon={sunnyOutline} slot="start"></IonIcon>
-                    <IonLabel>{"My Day"}</IonLabel>
-                    <IonLabel slot="end">{10}</IonLabel>
-                </IonItem>
-                <IonItem button detail={false}
-                         lines="none" routerLink="/todo/important">
-                    <IonIcon icon={starOutline} slot="start"></IonIcon>
-                    <IonLabel>{"Important"}</IonLabel>
-                    <IonLabel slot="end">{10}</IonLabel>
-                </IonItem>
-                <IonItem button detail={false}
-                         lines="none" routerLink="/todo/planned">
-                    <IonIcon icon={calendarOutline} slot="start"></IonIcon>
-                    <IonLabel>{"Planned"}</IonLabel>
-                    <IonLabel slot="end">{10}</IonLabel>
-                </IonItem>
-                <IonItem button detail={false}
-                         lines="none" routerLink="/todo/finished">
-                    <IonIcon icon={checkmarkCircleOutline} slot="start"></IonIcon>
-                    <IonLabel>{"Finished"}</IonLabel>
-                    <IonLabel slot="end">{10}</IonLabel>
-                </IonItem>
-                <IonItem button detail={false}
-                         lines="none" routerLink="/todo/tasks">
-                    <IonIcon icon={infiniteOutline} slot="start"></IonIcon>
-                    <IonLabel>{"Tasks"}</IonLabel>
-                    <IonLabel slot="end">{10}</IonLabel>
-                </IonItem>
+                {quickLists.map((item, index) => {
+                    const {id, title, color, count, icon} = item;
+                    return (<IonItem key={id} style={itemStyle} routerLink="/todo/today" button detail={false}
+                                     lines="none">
+                        <IonIcon style={{color: color}} icon={icon} slot="start"></IonIcon>
+                        <IonLabel>{title}</IonLabel>
+                        <IonLabel slot="end">{count}</IonLabel>
+                    </IonItem>)
+                })}
                 <Divider style={{marginLeft: 16, marginRight: 16, marginTop: 10, marginBottom: 10}}></Divider>
                 <TodoLists></TodoLists>
             </IonContent>

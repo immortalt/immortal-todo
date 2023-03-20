@@ -53,7 +53,7 @@ const TodoPage: React.FC<TodoPageProps> = ({match}) => {
     return (
         <>
             <IonHeader mode="ios">
-                <IonToolbar mode="md">
+                <IonToolbar mode={isIOS ? 'ios' : 'md'}>
                     <IonButtons slot="start" style={{height: 44}}>
                         <IonBackButton defaultHref="/home" text={isIOS ? "Lists" : ""}></IonBackButton>
                     </IonButtons>

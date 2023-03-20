@@ -59,9 +59,8 @@ const Search: React.FC = () => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                    <IonButtons slot="start" style={{height: 44,}}>
-                        <IonBackButton defaultHref="/home"
-                        ></IonBackButton>
+                    <IonButtons slot="start" style={{height: 44}}>
+                        <IonBackButton defaultHref="/home"></IonBackButton>
                     </IonButtons>
                     <input className={isIOS ? "searchbar ios" : "searchbar"} type="text" defaultValue=""
                            placeholder="Search" autoFocus
