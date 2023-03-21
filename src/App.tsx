@@ -52,7 +52,7 @@ const App: React.FC = () => {
                     <IonRouterOutlet animated={false}>
                         <Route exact path="/todo/:id/:theme" component={TodoList}/>
                         <Route exact path="/home" component={Home}/>
-                        {/*<Route exact path="/search" component={Search}/>*/}
+                        <Route exact path="/search" component={Search}/>
                         <Route exact path="/">
                             <Redirect to="/home"/>
                         </Route>
