@@ -21,6 +21,7 @@ import {Link} from "react-router-dom";
 import quickLists from "../../theme/quickLists";
 import {setStatusbarColor} from "../../theme/utils";
 import useIsDark from "../../hooks/useIsDark";
+import {listThemes, ThemeUnit} from '../../theme/listThemes';
 
 const preventDefault = (e: any) => e.preventDefault();
 const Home: React.FC = () => {
@@ -59,12 +60,13 @@ const Home: React.FC = () => {
                 </IonHeader>
                 <IonContent fullscreen>
                     {quickLists.map((item) => {
-                        const {id, title, color, count, icon, theme} = item;
+                        const {id, title, count, icon, theme} = item;
+                        const time = isDark ? "dark" : "light";
                         return (
                             <IonItem key={id} style={itemStyle} routerLink={`/todo/${id}/${theme}`} button detail={false}
                                      lines="none">
                                 <IonIcon style={{
-                                    color: color,
+                                    color: listThemes[theme][time].icon,
                                     marginLeft: -3.5,
                                     marginRight: 17.5,
                                     fontSize: 22,

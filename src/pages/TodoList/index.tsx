@@ -47,9 +47,7 @@ const TodoList: React.FC<TodoPageProps> = ({match}) => {
     const listTheme: ListTheme = listThemes[theme];
     const themeUnit = isDark ? listTheme.dark : listTheme.light;
     useEffect(() => {
-        setTimeout(() => {
-            setStatusbarColor(themeUnit.background);
-        }, 325);
+        setStatusbarColor(themeUnit.background);
     }, [themeUnit.background])
     const styles = {
         header: {
