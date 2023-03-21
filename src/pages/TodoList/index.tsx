@@ -7,9 +7,9 @@ import {
     IonIcon,
     IonTitle,
     IonPage,
-    IonToolbar, isPlatform
+    IonToolbar, isPlatform, IonModal, IonItem, IonLabel, IonList, IonAvatar, IonImg
 } from '@ionic/react';
-import React, {useEffect} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {
     checkmarkCircleOutline,
     ellipsisHorizontal, ellipsisVertical,
@@ -38,7 +38,9 @@ const TodoList: React.FC<TodoPageProps> = ({match}) => {
     const isIOS = isPlatform("ios");
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
+        if (!isIOS) {
+            setAnchorEl(event.currentTarget);
+        }
     };
     const handleClose = () => {
         setAnchorEl(null);
@@ -78,6 +80,8 @@ const TodoList: React.FC<TodoPageProps> = ({match}) => {
         return <div>{id}</div>;
     }
     const title = getTitle(id);
+    // modal related
+    const modal = useRef<HTMLIonModalElement>(null);
     return (
         <IonPage>
             <IonHeader mode="ios" className="ion-no-border" style={styles.header}>
@@ -94,13 +98,10 @@ const TodoList: React.FC<TodoPageProps> = ({match}) => {
                         <IonButton
                             color={themeUnit.text}
                             style={styles.iconButton}
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
+                            id={isIOS ? "open-modal" : ""}
                             onClick={handleMenu}
                         >
-                            <IonIcon slot="icon-only" ios={ellipsisHorizontal} md={ellipsisVertical}
-                                     onClick={handleMenu}></IonIcon>
+                            <IonIcon slot="icon-only" ios={ellipsisHorizontal} md={ellipsisVertical}></IonIcon>
                         </IonButton>
                     </IonButtons>
                     <Menu
@@ -141,6 +142,28 @@ const TodoList: React.FC<TodoPageProps> = ({match}) => {
                     </IonToolbar>
                 </IonHeader>
                 <TaskItems theme={listTheme}></TaskItems>
+                <IonModal ref={modal} trigger="open-modal" initialBreakpoint={0.5} breakpoints={[0, 0.5]}>
+                    <IonToolbar style={{marginTop: 15}} color={"transparent"}>
+                        <IonTitle>
+                            List Options
+                        </IonTitle>
+                        <IonButtons slot="end">
+                            <IonButton onClick={() => modal.current?.dismiss()}>
+                                <span style={{color: "#436af2"}}>Done</span>
+                            </IonButton>
+                        </IonButtons>
+                    </IonToolbar>
+                    <IonContent className="ion-padding">
+                        <IonList>
+                            <IonItem detail={false} lines={"none"} button>
+                                <IonIcon slot="start" style={{color: "#e42b2d"}} icon={trashOutline}></IonIcon>
+                                <IonLabel style={{color: "#e42b2d"}}>
+                                    Delete List
+                                </IonLabel>
+                            </IonItem>
+                        </IonList>
+                    </IonContent>
+                </IonModal>
             </IonContent>
         </IonPage>
     );
