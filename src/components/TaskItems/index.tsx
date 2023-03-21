@@ -1,29 +1,22 @@
 import React, {useState} from "react";
 import {DragDropContext, Draggable} from "../react-beautiful-dnd";
 import {StrictModeDroppable} from "../StrictModeDroppable";
-import {IonIcon, IonItem, IonLabel, IonRadio,} from "@ionic/react";
-import {starOutline} from "ionicons/icons";
-import "./index.css"
 import {ListTheme} from "../../theme/listThemes";
+import useIsDark from "../../hooks/useIsDark";
+import TaskItem from "./TaskItem";
+import {TodoTask} from "../../models/TodoTask";
 
-interface Item {
-    id: string;
-    title: string;
-    count: number;
-    order: number;
-}
-
-const getItems = (count: number): Item[] =>
+const getItems = (count: number): TodoTask[] =>
     Array.from({length: count}, (v, k) => k).map(k => ({
         id: `list-${k}`,
         title: `List ${k}`,
         count: k,
-        order: k
+        order: k,
+        finished: false
     }));
 
-
 // switch the order of the items in the array and return the new array
-const reorder = (list: Item[], source: number, destination: number): Item[] => {
+const reorder = (list: TodoTask[], source: number, destination: number): TodoTask[] => {
     const result = Array.from(list);
     const [removed] = result.splice(source, 1);
     result.splice(destination, 0, removed);
@@ -35,61 +28,37 @@ const reorder = (list: Item[], source: number, destination: number): Item[] => {
     return result;
 };
 
-
 const getListStyle = (isDraggingOver: boolean) => ({
     width: "100%",
     cursor: "default",
-    paddingLeft: 10,
-    paddingRight: 10,
+    paddingLeft: 8,
+    paddingRight: 8,
 });
 
 type TaskItemsProps = {
     theme: ListTheme
 }
 const TaskItems: React.FC<TaskItemsProps> = ({theme}) => {
-    const [items, setItems] = useState<Item[]>(getItems(20));
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    const isDark = prefersDark.matches;
-
-    const getItemStyle = (isDragging: boolean, draggableStyle: any) => {
-        return {
-            userSelect: "none",
-            cursor: "default",
-            "--background": isDark ? "#212121" : "white",
-            "--min-height": "65px",
-            "--border-radius": "10px",
-            marginBottom: 5,
-            ...draggableStyle,
-        }
-    };
-
+    const [items, setItems] = useState<TodoTask[]>(getItems(20));
     const onDragEnd = (result: any) => {
         if (!result.destination) {
             return;
         }
-
         const reorderedItems = reorder(
             items,
             result.source.index,
             result.destination.index
         );
-
         setItems(reorderedItems);
     };
+    const isDark = useIsDark()
     const themeUnit = isDark ? theme.dark : theme.light;
-    const radioColor = isDark ? themeUnit.text : themeUnit.background;
-    const styles = {
-        star: {
-            fontSize: 20,
-            color: "var(--ion-color-medium)"
-        },
-        radio: {
-            "--color-checked": "black",
-            border: `2px solid ${radioColor}`,
-            backgroundColor: radioColor,
-        }
+    let radioColor: string;
+    if (themeUnit.reversed) {
+        radioColor = themeUnit.text;
+    } else {
+        radioColor = isDark ? themeUnit.text : themeUnit.background;
     }
-
     return (
         <DragDropContext onDragEnd={onDragEnd}>
             <StrictModeDroppable droppableId="droppable">
@@ -99,35 +68,12 @@ const TaskItems: React.FC<TaskItemsProps> = ({theme}) => {
                         ref={provided.innerRef}
                         style={getListStyle(snapshot.isDraggingOver)}
                     >
-                        {items.map((item, index) => (
+                        {items.map((item: TodoTask, index: number) => (
                             <Draggable key={item.id} draggableId={item.id} index={index}>
                                 {(provided, snapshot) => (
-                                    <IonItem button detail={false} ref={provided.innerRef}
-                                             {...provided.draggableProps}
-                                             {...provided.dragHandleProps}
-                                             style={getItemStyle(
-                                                 snapshot.isDragging,
-                                                 provided.draggableProps.style
-                                             )}
-                                             lines="none"
-                                             color={snapshot.isDragging ? "light" : ""}
-                                    >
-                                        <IonRadio mode="ios" value="custom" slot="start"
-                                                  style={styles.radio}></IonRadio>
-                                        <IonLabel>
-                                            <div>
-                                                <div style={{fontWeight: "bold"}}>
-                                                    {item.title}
-                                                </div>
-                                                <div>
-                                                    {item.title}
-                                                </div>
-                                            </div>
-                                        </IonLabel>
-                                        <IonLabel slot="end">
-                                            <IonIcon style={styles.star} icon={starOutline}></IonIcon>
-                                        </IonLabel>
-                                    </IonItem>
+                                    <TaskItem item={item} radioColor={radioColor} snapshot={snapshot}
+                                              provided={provided} themeUnit={themeUnit}
+                                              key={item.id}/>
                                 )}
                             </Draggable>
                         ))}

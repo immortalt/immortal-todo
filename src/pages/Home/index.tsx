@@ -21,7 +21,7 @@ import {Link} from "react-router-dom";
 import quickLists from "../../theme/quickLists";
 import {setStatusbarColor} from "../../theme/utils";
 import useIsDark from "../../hooks/useIsDark";
-import {listThemes, ThemeUnit} from '../../theme/listThemes';
+import {listThemes} from '../../theme/listThemes';
 
 const preventDefault = (e: any) => e.preventDefault();
 const Home: React.FC = () => {

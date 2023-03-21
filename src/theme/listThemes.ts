@@ -5,6 +5,8 @@ export type ThemeUnit = {
     background: string;
     // text color in list toolbar
     text: string;
+    // if is reversed color theme
+    reversed?: boolean;
 }
 
 export type ListTheme = {
@@ -47,11 +49,13 @@ export const listThemes: themeDict = {
             "icon": "#166F6B",
             "background": "#DAF0EE",
             "text": "#346D6A",
+            reversed: true,
         },
         dark: {
             "icon": "#8BD3CE",
             "background": "#080808",
             "text": "#9BD1CD",
+            reversed: true,
         }
     },
     "lightpink-reverse": {
@@ -59,11 +63,13 @@ export const listThemes: themeDict = {
             "icon": "#A84329",
             "background": "#F9E8DE",
             "text": "#A84329",
+            reversed: true,
         },
         dark: {
             "icon": "#ECBDA2",
             "background": "#080808",
             "text": "#ECBDA2",
+            reversed: true,
         }
     },
     "purple": {
