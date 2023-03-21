@@ -6,6 +6,7 @@ import {
     IonHeader,
     IonIcon,
     IonTitle,
+    IonPage,
     IonToolbar, isPlatform
 } from '@ionic/react';
 import React, {useEffect} from "react";
@@ -23,6 +24,7 @@ import DelayDisplay from "../../components/DelayDisplay";
 import {listThemes, ListTheme} from "../../theme/listThemes";
 import TaskItems from "../../components/TaskItems";
 import {setStatusbarColor} from "../../theme/utils";
+import useIsDark from "../../hooks/useIsDark";
 
 interface TodoPageProps
     extends RouteComponentProps<{
@@ -32,7 +34,7 @@ interface TodoPageProps
 }
 
 const TodoList: React.FC<TodoPageProps> = ({match}) => {
-    const {id, theme = "green"} = match.params;
+    const {id = "tasks", theme = "green"} = match.params;
     const isIOS = isPlatform("ios");
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -41,22 +43,21 @@ const TodoList: React.FC<TodoPageProps> = ({match}) => {
     const handleClose = () => {
         setAnchorEl(null);
     }
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    const isDark = prefersDark.matches;
+    const isDark = useIsDark();
     const listTheme: ListTheme = listThemes[theme];
     const themeUnit = isDark ? listTheme.dark : listTheme.light;
     useEffect(() => {
-        setStatusbarColor(themeUnit.background);
-    }, [])
+        setTimeout(() => {
+            setStatusbarColor(themeUnit.background);
+        }, 325);
+    }, [themeUnit.background])
     const styles = {
         header: {
-            backgroundColor: themeUnit.background,
             color: themeUnit.text,
             "--background": themeUnit.background,
             "--color": themeUnit.text,
         },
         contentHeader: {
-            backgroundColor: themeUnit.background,
             color: themeUnit.text,
             "--background": themeUnit.background,
             "--color": themeUnit.text,
@@ -80,7 +81,7 @@ const TodoList: React.FC<TodoPageProps> = ({match}) => {
     }
     const title = getTitle(id);
     return (
-        <>
+        <IonPage>
             <IonHeader mode="ios" className="ion-no-border" style={styles.header}>
                 <IonToolbar mode={isIOS ? 'ios' : 'md'} style={styles.toolbar}>
                     <IonButtons slot="start">
@@ -143,7 +144,7 @@ const TodoList: React.FC<TodoPageProps> = ({match}) => {
                 </IonHeader>
                 <TaskItems theme={listTheme}></TaskItems>
             </IonContent>
-        </>
+        </IonPage>
     );
 };
 

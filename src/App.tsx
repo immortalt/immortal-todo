@@ -1,8 +1,9 @@
 import {Redirect, Route, Switch} from 'react-router-dom';
-import {IonApp, IonRouterOutlet, setupIonicReact} from '@ionic/react';
+import {createAnimation, IonApp, IonRouterOutlet, setupIonicReact} from '@ionic/react';
 import {IonReactRouter} from '@ionic/react-router';
 import Home from './pages/Home';
 import Search from './pages/Search';
+import TodoList from "./pages/TodoList";
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -23,8 +24,8 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import React from "react";
-import TodoList from "./pages/TodoList";
 import {ThemeProvider, createTheme} from '@mui/material/styles';
+import {CreateAnimation, Animation} from '@ionic/react';
 
 setupIonicReact();
 const darkTheme = createTheme({
@@ -46,24 +47,20 @@ const App: React.FC = () => {
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
     const isDark = prefersDark.matches;
     return (<ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-        <IonApp style={{userSelect: "none"}}>
-            <IonReactRouter>
-                <IonRouterOutlet>
-                    <Switch>
-                        <Route exact path="/home" component={Home}/>
-                        <Route exact path="/search" component={Search}/>
+            <IonApp>
+                <IonReactRouter>
+                    <IonRouterOutlet animated={false}>
                         <Route exact path="/todo/:id/:theme" component={TodoList}/>
+                        <Route exact path="/home" component={Home}/>
+                        {/*<Route exact path="/search" component={Search}/>*/}
                         <Route exact path="/">
                             <Redirect to="/home"/>
                         </Route>
-                        <Route>
-                            <Redirect to="/"/>
-                        </Route>
-                    </Switch>
-                </IonRouterOutlet>
-            </IonReactRouter>
-        </IonApp>
-    </ThemeProvider>)
+                    </IonRouterOutlet>
+                </IonReactRouter>
+            </IonApp>
+        </ThemeProvider>
+    )
 };
 
 export default App;
