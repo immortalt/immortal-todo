@@ -17,14 +17,13 @@ import {
     search,
 } from 'ionicons/icons';
 import {Divider} from "@mui/material";
-import {RouteComponentProps} from "react-router";
 import {Link} from "react-router-dom";
 import quickLists from "../../theme/quickLists";
 import {setStatusbarColor} from "../../theme/utils";
 import useIsDark from "../../hooks/useIsDark";
 
 const preventDefault = (e: any) => e.preventDefault();
-const Home: React.FC<RouteComponentProps> = ({match}) => {
+const Home: React.FC = () => {
         const isDark = useIsDark();
         const itemStyle = {
             "--background-activated": isDark ? "var(--ion-color-dark-shade)" : "var(--ion-color-light-shade)",
@@ -37,6 +36,7 @@ const Home: React.FC<RouteComponentProps> = ({match}) => {
         }
         useEffect(() => {
             setStatusbarColor(isDark ? "#080808" : "#ffffff");
+            // eslint-disable-next-line react-hooks/exhaustive-deps
         }, [isDark, window.location.href]);
         return (
             <IonPage>

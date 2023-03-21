@@ -1,5 +1,5 @@
-import {Redirect, Route, Switch} from 'react-router-dom';
-import {createAnimation, IonApp, IonRouterOutlet, setupIonicReact} from '@ionic/react';
+import {Redirect, Route} from 'react-router-dom';
+import {IonApp, IonRouterOutlet, isPlatform, setupIonicReact} from '@ionic/react';
 import {IonReactRouter} from '@ionic/react-router';
 import Home from './pages/Home';
 import Search from './pages/Search';
@@ -25,7 +25,8 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import React from "react";
 import {ThemeProvider, createTheme} from '@mui/material/styles';
-import {CreateAnimation, Animation} from '@ionic/react';
+import useIsDark from "./hooks/useIsDark";
+import {Switch} from "react-router";
 
 setupIonicReact();
 const darkTheme = createTheme({
@@ -44,18 +45,21 @@ const lightTheme = createTheme({
     },
 });
 const App: React.FC = () => {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    const isDark = prefersDark.matches;
+    const isDark = useIsDark();
+    const routes = <>
+        <Route exact path="/todo/:id/:theme" component={TodoList}/>
+        <Route exact path="/home" component={Home}/>
+        <Route exact path="/search" component={Search}/>
+        <Route exact path="/">
+            <Redirect to="/home"/>
+        </Route>
+    </>
     return (<ThemeProvider theme={isDark ? darkTheme : lightTheme}>
             <IonApp>
                 <IonReactRouter>
-                    <IonRouterOutlet animated={false}>
-                        <Route exact path="/todo/:id/:theme" component={TodoList}/>
-                        <Route exact path="/home" component={Home}/>
-                        <Route exact path="/search" component={Search}/>
-                        <Route exact path="/">
-                            <Redirect to="/home"/>
-                        </Route>
+                    <IonRouterOutlet>
+                        {/*use switch disable the animation but prevent the shake error after swipe back on iOS*/}
+                        {isPlatform("ios") ? <Switch>{routes}</Switch> : routes}
                     </IonRouterOutlet>
                 </IonReactRouter>
             </IonApp>
