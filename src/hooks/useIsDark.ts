@@ -1,9 +1,8 @@
 import {useState} from 'react';
 
 function useIsDark() {
-    const [isDark, setIsDark] = useState(false);
-
     const mqList = window.matchMedia('(prefers-color-scheme: dark)');
+    const [isDark, setIsDark] = useState(mqList.matches);
     mqList.addEventListener('change', (event) => {
         if (event.matches) {
             // dark mode
