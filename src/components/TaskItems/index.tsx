@@ -72,7 +72,7 @@ const TaskItems: React.FC<TaskItemsProps> = ({theme}) => {
                             <Draggable key={item.id} draggableId={item.id} index={index}>
                                 {(provided, snapshot) => (
                                     <TaskItem item={item} radioColor={radioColor} snapshot={snapshot}
-                                              provided={provided} themeUnit={themeUnit}
+                                              provided={provided}
                                               key={item.id}/>
                                 )}
                             </Draggable>
