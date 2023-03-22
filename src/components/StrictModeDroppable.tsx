@@ -1,17 +1,20 @@
-import {useEffect, useState} from "react";
-import {Droppable, DroppableProps} from "./react-beautiful-dnd";
+import React, { useEffect, useState } from 'react'
+import { Droppable, DroppableProps } from './react-beautiful-dnd'
 
-export const StrictModeDroppable = ({children, ...props}: DroppableProps) => {
-    const [enabled, setEnabled] = useState(false);
-    useEffect(() => {
-        const animation = requestAnimationFrame(() => setEnabled(true));
-        return () => {
-            cancelAnimationFrame(animation);
-            setEnabled(false);
-        };
-    }, []);
-    if (!enabled) {
-        return null;
+export const StrictModeDroppable: React.FC<DroppableProps> = ({
+  children,
+  ...props
+}: DroppableProps) => {
+  const [enabled, setEnabled] = useState(false)
+  useEffect(() => {
+    const animation = requestAnimationFrame(() => setEnabled(true))
+    return () => {
+      cancelAnimationFrame(animation)
+      setEnabled(false)
     }
-    return <Droppable {...props}>{children}</Droppable>;
-};
+  }, [])
+  if (!enabled) {
+    return null
+  }
+  return <Droppable {...props}>{children}</Droppable>
+}
