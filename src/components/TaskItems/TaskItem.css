@@ -62,7 +62,7 @@
 .my-checkbox .checked.circle-4,
 .my-checkbox .checked.circle-5,
 .my-checkbox .checked.circle-6 {
-    animation: checkbox-circle 0.6s ease;
+    animation: checkbox-circle 0.5s ease;
 }
 
 @keyframes checkbox-circle {
@@ -83,7 +83,7 @@
 }
 
 .my-checkbox .checkbox-checked {
-    animation: checkbox-reshape 0.3s ease;
+    animation: checkbox-reshape 0.2s ease;
 }
 
 @keyframes checkbox-reshape {
