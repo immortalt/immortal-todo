@@ -1,6 +1,6 @@
 import {IonCheckbox, IonIcon, IonItem, IonLabel} from "@ionic/react";
 import {starOutline} from "ionicons/icons";
-import React from "react";
+import React, {useEffect} from "react";
 import useIsDark from "../../hooks/useIsDark";
 import {ThemeUnit} from "../../theme/listThemes";
 import {TodoTask} from "../../models/TodoTask";
@@ -60,7 +60,11 @@ const TaskItem: React.FC<TaskItemProps> = (
         }
     };
     const [checked, setChecked] = React.useState(false);
-    return <IonItem  button detail={false} ref={provided.innerRef}
+    const [justDragged, setJustDragged] = React.useState(false);
+    useEffect(() => {
+        setJustDragged(false)
+    }, [checked]);
+    return <IonItem button detail={false} ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                     style={getItemStyle(
@@ -68,16 +72,23 @@ const TaskItem: React.FC<TaskItemProps> = (
                         provided.draggableProps.style
                     )}
                     lines="none"
+                    onTouchEnd={() => {
+                        if (snapshot.isDragging) {
+                            setJustDragged(true)
+                        }
+                    }}
                     color={snapshot.isDragging ? "light" : ""}
     >
-        <div slot="start" className="my-checkbox">
+        <div slot="start" className={!justDragged ? "my-checkbox" : ""}>
             <div className={`circle circle-1 ${checked ? 'checked' : ''}`}></div>
             <div className={`circle circle-2 ${checked ? 'checked' : ''}`}></div>
             <div className={`circle circle-3 ${checked ? 'checked' : ''}`}></div>
             <div className={`circle circle-4 ${checked ? 'checked' : ''}`}></div>
             <div className={`circle circle-5 ${checked ? 'checked' : ''}`}></div>
             <div className={`circle circle-6 ${checked ? 'checked' : ''}`}></div>
-            <IonCheckbox value={checked} onIonChange={e => setChecked(e.detail.checked)}
+            <IonCheckbox value={checked} onIonChange={e => {
+                setChecked(e.detail.checked)
+            }}
                          style={styles.radio}
             />
         </div>
