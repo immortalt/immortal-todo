@@ -143,7 +143,7 @@ const TodoList: React.FC<TodoPageProps> = ({match}) => {
                 </IonHeader>
                 <TaskItems theme={listTheme}></TaskItems>
                 <IonModal ref={modal} trigger="open-modal" initialBreakpoint={0.5} breakpoints={[0, 0.5]}>
-                    <IonToolbar style={{marginTop: 15}} color={"transparent"}>
+                    <IonToolbar style={{marginTop: 20}} color={"transparent"}>
                         <IonTitle>
                             List Options
                         </IonTitle>
@@ -153,7 +153,7 @@ const TodoList: React.FC<TodoPageProps> = ({match}) => {
                             </IonButton>
                         </IonButtons>
                     </IonToolbar>
-                    <IonContent className="ion-padding">
+                    <IonContent>
                         <IonList>
                             <IonItem detail={false} lines={"none"} button>
                                 <IonIcon slot="start" style={{color: "#e42b2d"}} icon={trashOutline}></IonIcon>
