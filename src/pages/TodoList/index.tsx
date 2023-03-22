@@ -84,6 +84,28 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
   const title = getTitle(id)
   // modal related
   const modal = useRef<HTMLIonModalElement>(null)
+  const sheetModel = <IonModal ref={modal} trigger="open-modal" initialBreakpoint={0.5} breakpoints={[0, 0.5]}>
+    <IonToolbar style={{ marginTop: 20 }} color={'transparent'}>
+      <IonTitle>
+        List Options
+      </IonTitle>
+      <IonButtons slot="end">
+        <IonButton onClick={async () => await modal.current?.dismiss()}>
+          <span style={{ color: '#436af2' }}>Done</span>
+        </IonButton>
+      </IonButtons>
+    </IonToolbar>
+    <IonContent>
+      <IonList>
+        <IonItem detail={false} lines={'none'} button>
+          <IonIcon slot="start" style={{ color: '#e42b2d' }} icon={trashOutline}></IonIcon>
+          <IonLabel style={{ color: '#e42b2d' }}>
+            Delete List
+          </IonLabel>
+        </IonItem>
+      </IonList>
+    </IonContent>
+  </IonModal>
   return (
     <IonPage>
       <IonHeader mode="ios" className="ion-no-border" style={styles.header}>
@@ -144,28 +166,7 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
           </IonToolbar>
         </IonHeader>
         <TaskItems theme={listTheme}></TaskItems>
-        <IonModal ref={modal} trigger="open-modal" initialBreakpoint={0.5} breakpoints={[0, 0.5]}>
-          <IonToolbar style={{ marginTop: 20 }} color={'transparent'}>
-            <IonTitle>
-              List Options
-            </IonTitle>
-            <IonButtons slot="end">
-              <IonButton onClick={async () => await modal.current?.dismiss()}>
-                <span style={{ color: '#436af2' }}>Done</span>
-              </IonButton>
-            </IonButtons>
-          </IonToolbar>
-          <IonContent>
-            <IonList>
-              <IonItem detail={false} lines={'none'} button>
-                <IonIcon slot="start" style={{ color: '#e42b2d' }} icon={trashOutline}></IonIcon>
-                <IonLabel style={{ color: '#e42b2d' }}>
-                  Delete List
-                </IonLabel>
-              </IonItem>
-            </IonList>
-          </IonContent>
-        </IonModal>
+        {isIOS && sheetModel}
       </IonContent>
     </IonPage>
   )
