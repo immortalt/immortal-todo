@@ -2,6 +2,7 @@ import {
   IonBackButton,
   IonButton,
   IonButtons,
+  IonCheckbox,
   IonContent,
   IonFooter,
   IonHeader,
@@ -25,10 +26,10 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import './index.css'
 import DelayDisplay from '../../components/DelayDisplay'
 import { type ListTheme, listThemes } from '../../theme/listThemes'
-import TaskItems from '../../components/TaskItems'
 import { setStatusbarColor } from '../../theme/utils'
 import useIsDark from '../../hooks/useIsDark'
 import { darkenColor, lightenColor } from './utils'
+import TaskItems from '../../components/TaskItems'
 
 type TodoPageProps = RouteComponentProps<{
   id: string
@@ -41,6 +42,9 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
     theme = 'green'
   } = match.params
   const isIOS = isPlatform('ios')
+  const isAndroid = isPlatform('android')
+  const isApp = isIOS || isAndroid
+  const [isAddingTask, setIsAddingTask] = React.useState(false)
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const handleMenu = (event: React.MouseEvent<HTMLElement>): void => {
     if (!isIOS) {
@@ -61,6 +65,34 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
       return '#212121'
     } else {
       return themeUnit.reversed ? lightenColor(themeUnit.background) : darkenColor(themeUnit.background)
+    }
+  }
+  const getFooterItemStyle = () => {
+    if (!isAddingTask) {
+      return {
+        display: 'flex',
+        alignItems: 'center',
+        background: getFooterItemBackground(),
+        marginLeft: 10,
+        marginRight: 10,
+        borderRadius: 8,
+        height: '54px',
+        color: themeUnit.text,
+        marginTop: 10,
+      }
+    }
+    return {
+      display: 'flex',
+      alignItems: 'center',
+      background: isDark ? '#212121' : 'white',
+      marginLeft: 0,
+      marginRight: 0,
+      height: '54px',
+      color: isDark ? 'white' : '#767678',
+      boxShadow: '0px 8px 12px rgba(0, 0, 0, 1)',
+      marginTop: 1,
+      marginBottom: -1,
+      borderRadius: '8px 8px 0 0',
     }
   }
   const styles = {
@@ -85,28 +117,26 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
     },
     footer: {
       bottom: -1,
-      height: 140,
-      background: themeUnit.background,
+      height: isApp ? (isAddingTask ? 58 : 115) : 76,
+      background: isAddingTask ? 'transparent' : themeUnit.background,
     },
-    footerItem: {
-      '--background': getFooterItemBackground(),
-      marginLeft: 10,
-      marginRight: 10,
-      borderRadius: 8,
-      '--min-height': '54px',
-      color: themeUnit.text,
-      marginTop: 10,
-    },
+    footerItem: getFooterItemStyle(),
     newTaskIcon: {
-      marginLeft: -5,
-      marginRight: 10,
+      fontSize: 32,
+      marginLeft: 9,
+      marginRight: 11,
     },
     newTaskInput: {
-      '--placeholder-color': themeUnit.text,
+      '--placeholder-color': isAddingTask ? '#767678' : themeUnit.text,
       '--placeholder-opacity': 1,
       borderWidth: 0
+    },
+    footerItem2: {
+      '--min-height': '100px',
+      display: isAddingTask ? 'block' : 'none',
     }
   }
+
   const getTitle = (id: string) => {
     if (id === 'myday') {
       return <div style={styles.header}>
@@ -204,9 +234,28 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
         {isIOS && sheetModel}
       </IonContent>
       <IonFooter mode="ios" className="ion-no-border" style={styles.footer}>
-        <IonItem lines="none" style={styles.footerItem}>
-          <IonIcon style={styles.newTaskIcon} slot="start" icon={addOutline}></IonIcon>
-          <IonInput style={styles.newTaskInput} placeholder="Add a Task"></IonInput>
+        <div style={styles.footerItem}>
+          {!isAddingTask && <IonIcon style={styles.newTaskIcon} icon={addOutline}></IonIcon>}
+          {isAddingTask && <IonCheckbox style={{
+            marginLeft: 21,
+            marginRight: 15
+          }} aria-readonly></IonCheckbox>}
+          <IonInput
+            onClick={() => {
+              if (isApp) {
+                setIsAddingTask(true)
+              }
+            }}
+            onBlur={() => {
+              if (isApp) {
+                setIsAddingTask(false)
+              }
+            }} style={styles.newTaskInput} placeholder="Add a Task"></IonInput>
+        </div>
+        <IonItem lines="none" style={styles.footerItem2}>
+          <div style={{ height: '100vh' }}>
+            <p></p>
+          </div>
         </IonItem>
       </IonFooter>
     </IonPage>
