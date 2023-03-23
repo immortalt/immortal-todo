@@ -1,11 +1,14 @@
-export function darkenColor (color: string): string {
+// color: #000000 ~ #ffffff
+// opacity: 0 ~ 1
+export function darkenColor (color: string, opacity: number): string {
   let r = parseInt(color.slice(1, 3), 16)
   let g = parseInt(color.slice(3, 5), 16)
   let b = parseInt(color.slice(5, 7), 16)
 
-  r = Math.round(r * 0.8)
-  g = Math.round(g * 0.8)
-  b = Math.round(b * 0.8)
+  const x = 1 - opacity
+  r = Math.round(r * x)
+  g = Math.round(g * x)
+  b = Math.round(b * x)
 
   const hexR = r.toString(16).padStart(2, '0')
   const hexG = g.toString(16).padStart(2, '0')
@@ -24,3 +27,4 @@ export function lightenColor (color: string): string {
   const b2 = Math.round((b1 * 211) / 222)
   return `#${r2.toString(16)}${g2.toString(16)}${b2.toString(16)}`
 }
+

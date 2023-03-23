@@ -26,11 +26,11 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import './index.css'
 import DelayDisplay from '../../components/DelayDisplay'
 import { type ListTheme, listThemes } from '../../theme/listThemes'
-import { setStatusbarColor } from '../../theme/utils'
 import useIsDark from '../../hooks/useIsDark'
 import { darkenColor, lightenColor } from './utils'
 import TaskItems from '../../components/TaskItems'
 import { TodoTask } from '../../models/TodoTask'
+import { setStatusbarColor } from '../../theme/utils'
 
 const getItems = (count: number): TodoTask[] =>
   Array.from({ length: count }, (v, k) => k).map(k => ({
@@ -74,13 +74,17 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
   const listTheme: ListTheme = listThemes[theme]
   const themeUnit = isDark ? listTheme.dark : listTheme.light
   useEffect(() => {
-    setStatusbarColor(themeUnit.background)
-  }, [themeUnit.background])
+    if (isAddingTask) {
+      setStatusbarColor(darkenColor(themeUnit.background, 0.3))
+    } else {
+      setStatusbarColor(themeUnit.background)
+    }
+  }, [themeUnit.background, isAddingTask])
   const getFooterItemBackground = () => {
     if (isDark) {
       return '#212121'
     } else {
-      return themeUnit.reversed ? lightenColor(themeUnit.background) : darkenColor(themeUnit.background)
+      return themeUnit.reversed ? lightenColor(themeUnit.background) : 'rgba(0, 0, 0, 0.2)'
     }
   }
   const getContentStyle = () => {
