@@ -17,7 +17,7 @@ import {
   IonToolbar,
   isPlatform
 } from '@ionic/react'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { createRef, useEffect, useRef, useState } from 'react'
 import { addOutline, checkmarkCircleOutline, ellipsisHorizontal, ellipsisVertical, trashOutline } from 'ionicons/icons'
 import { Menu, MenuItem } from '@mui/material'
 import { type RouteComponentProps } from 'react-router'
@@ -36,8 +36,7 @@ const getItems = (count: number): TodoTask[] =>
   Array.from({ length: count }, (v, k) => k).map(k => ({
     id: `list-${k}`,
     title: `List ${k}`,
-    count: k,
-    order: k,
+    order: count - k,
     finished: false
   }))
 
@@ -57,9 +56,11 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
     setIsDesktop(mediaQuery.matches)
   }, [])
   const isIOS = isPlatform('ios')
+  const isAndroid = isPlatform('android')
   const isPWA = isPlatform('pwa')
   const [isAddingTask, setIsAddingTask] = React.useState(false)
   const [currentText, setCurrentText] = React.useState('')
+  const [tasks, setTasks] = useState<TodoTask[]>(getItems(13).sort((a, b) => b.order - a.order))
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const handleMenu = (event: React.MouseEvent<HTMLElement>): void => {
     if (!isIOS) {
@@ -82,6 +83,30 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
       return themeUnit.reversed ? lightenColor(themeUnit.background) : darkenColor(themeUnit.background)
     }
   }
+  const getContentStyle = () => {
+    const style = {
+      '--background': themeUnit.background,
+      '--padding-top': '0px',
+    }
+    if (isAddingTask && !isDesktop) {
+      if (isIOS) {
+        if (isPWA) {
+          style['--padding-top'] = '330px'
+        } else {
+          // in browser
+          style['--padding-top'] = '255px'
+        }
+      } else if (isAndroid) {
+        if (isPWA) {
+          style['--padding-top'] = '230px'
+        } else {
+          // in browser
+          style['--padding-top'] = '230px'
+        }
+      }
+    }
+    return style
+  }
   const getFooterItemStyle = () => {
     if (!isAddingTask) {
       return {
@@ -94,7 +119,7 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
         height: '54px',
         color: themeUnit.text,
         marginTop: 10,
-        marginBottom: (isPWA && !isDesktop) ? 49 : 12,
+        marginBottom: (isPWA && !isDesktop && !isAndroid) ? 49 : 12,
       }
     }
     // isAddingTask
@@ -129,9 +154,7 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
       '--color': themeUnit.text
     },
     iconButton: { color: themeUnit.text },
-    content: {
-      '--background': themeUnit.background,
-    },
+    content: getContentStyle(),
     footer: {
       bottom: -1,
       background: isAddingTask ? 'transparent' : themeUnit.background,
@@ -162,6 +185,10 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
     return <div>{id}</div>
   }
   const title = getTitle(id)
+  const addTask = (task: TodoTask) => {
+    // add task to tasks
+    setTasks([task, ...tasks])
+  }
   // modal related
   const modal = useRef<HTMLIonModalElement>(null)
   const sheetModel = <IonModal ref={modal} trigger="open-modal" initialBreakpoint={0.5} breakpoints={[0, 0.5]}>
@@ -186,6 +213,14 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
       </IonList>
     </IonContent>
   </IonModal>
+  const contentRef = createRef<HTMLIonContentElement>()
+
+  function scrollToTop () {
+    // Passing a duration to the method makes it so the scroll slowly
+    // goes to the top instead of instantly
+    contentRef.current?.scrollToTop(500)
+  }
+
   return (
     <IonPage>
       <IonHeader mode="ios" className="ion-no-border" style={styles.header}>
@@ -238,14 +273,14 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
           </Menu>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen style={styles.content}>
+      <IonContent ref={contentRef} fullscreen style={styles.content}>
         <IonHeader style={styles.header} className="ion-no-border content-header" mode="ios"
                    collapse="condense">
           <IonToolbar mode="ios" style={styles.contentHeader}>
             <IonTitle size="large">{title}</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <TaskItems items={getItems(20)} theme={listTheme}></TaskItems>
+        <TaskItems tasks={tasks} theme={listTheme} setTasks={setTasks}></TaskItems>
         {isAddingTask && <div className="add-task-mask"></div>}
         {isIOS && sheetModel}
       </IonContent>
@@ -259,19 +294,27 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
           <IonInput
             value={currentText}
             onIonChange={(e) => {
-              setCurrentText(e.detail.value!)
+              if (e) {
+                setCurrentText(e.detail.value!)
+              }
             }}
-            onClick={() => {
+            onIonFocus={() => {
               setIsAddingTask(true)
             }}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
-                setIsAddingTask(false)
+                addTask({
+                  id: new Date().getTime().toString(),
+                  title: currentText,
+                  order: tasks.length,
+                  finished: false,
+                })
+                setCurrentText('')
+                scrollToTop()
               }
             }}
             onIonBlur={() => {
               setIsAddingTask(false)
-              setCurrentText('')
             }} style={styles.newTaskInput} placeholder="Add a Task"></IonInput>
         </div>
       </IonFooter>

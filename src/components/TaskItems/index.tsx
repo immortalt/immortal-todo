@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { DragDropContext, Draggable } from '../react-beautiful-dnd'
 import { StrictModeDroppable } from '../StrictModeDroppable'
 import { ListTheme } from '../../theme/listThemes'
@@ -28,23 +28,24 @@ const getListStyle = () => ({
 
 type TaskItemsProps = {
   theme: ListTheme
-  items: TodoTask[]
+  tasks: TodoTask[]
+  setTasks: (items: TodoTask[]) => void
 }
 const TaskItems: React.FC<TaskItemsProps> = ({
   theme,
-  items: tasks
+  tasks,
+  setTasks
 }) => {
-  const [items, setItems] = useState<TodoTask[]>(tasks)
   const onDragEnd = (result: any) => {
     if (!result.destination) {
       return
     }
     const reorderedItems = reorder(
-      items,
+      tasks,
       result.source.index,
       result.destination.index
     )
-    setItems(reorderedItems)
+    setTasks(reorderedItems)
   }
   const isDark = useIsDark()
   const themeUnit = isDark ? theme.dark : theme.light
@@ -66,7 +67,7 @@ const TaskItems: React.FC<TaskItemsProps> = ({
             ref={provided.innerRef}
             style={getListStyle()}
           >
-            {items.map((item: TodoTask, index: number) => (
+            {tasks.map((item: TodoTask, index: number) => (
               <Draggable key={item.id} draggableId={item.id} index={index}>
                 {(provided, snapshot) => (
                   <TaskItem item={item} radioColor={radioColor} snapshot={snapshot}
