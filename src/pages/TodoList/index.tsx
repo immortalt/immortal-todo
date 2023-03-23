@@ -3,8 +3,10 @@ import {
   IonButton,
   IonButtons,
   IonContent,
+  IonFooter,
   IonHeader,
   IonIcon,
+  IonInput,
   IonItem,
   IonLabel,
   IonList,
@@ -15,7 +17,7 @@ import {
   isPlatform
 } from '@ionic/react'
 import React, { useEffect, useRef } from 'react'
-import { checkmarkCircleOutline, ellipsisHorizontal, ellipsisVertical, trashOutline } from 'ionicons/icons'
+import { addOutline, checkmarkCircleOutline, ellipsisHorizontal, ellipsisVertical, trashOutline } from 'ionicons/icons'
 import { Menu, MenuItem } from '@mui/material'
 import { type RouteComponentProps } from 'react-router'
 import ListItemText from '@mui/material/ListItemText'
@@ -26,6 +28,7 @@ import { type ListTheme, listThemes } from '../../theme/listThemes'
 import TaskItems from '../../components/TaskItems'
 import { setStatusbarColor } from '../../theme/utils'
 import useIsDark from '../../hooks/useIsDark'
+import { darkenColor, lightenColor } from './utils'
 
 type TodoPageProps = RouteComponentProps<{
   id: string
@@ -53,6 +56,13 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
   useEffect(() => {
     setStatusbarColor(themeUnit.background)
   }, [themeUnit.background])
+  const getFooterItemBackground = () => {
+    if (isDark) {
+      return '#212121'
+    } else {
+      return themeUnit.reversed ? lightenColor(themeUnit.background) : darkenColor(themeUnit.background)
+    }
+  }
   const styles = {
     header: {
       color: themeUnit.text,
@@ -70,7 +80,32 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
       '--color': themeUnit.text
     },
     iconButton: { color: themeUnit.text },
-    content: { '--background': themeUnit.background }
+    content: {
+      '--background': themeUnit.background,
+    },
+    footer: {
+      bottom: -1,
+      height: 140,
+      background: themeUnit.background,
+    },
+    footerItem: {
+      '--background': getFooterItemBackground(),
+      marginLeft: 10,
+      marginRight: 10,
+      borderRadius: 8,
+      '--min-height': '54px',
+      color: themeUnit.text,
+      marginTop: 10,
+    },
+    newTaskIcon: {
+      marginLeft: -5,
+      marginRight: 10,
+    },
+    newTaskInput: {
+      '--placeholder-color': themeUnit.text,
+      '--placeholder-opacity': 1,
+      borderWidth: 0
+    }
   }
   const getTitle = (id: string) => {
     if (id === 'myday') {
@@ -168,6 +203,12 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
         <TaskItems theme={listTheme}></TaskItems>
         {isIOS && sheetModel}
       </IonContent>
+      <IonFooter mode="ios" className="ion-no-border" style={styles.footer}>
+        <IonItem lines="none" style={styles.footerItem}>
+          <IonIcon style={styles.newTaskIcon} slot="start" icon={addOutline}></IonIcon>
+          <IonInput style={styles.newTaskInput} placeholder="Add a Task"></IonInput>
+        </IonItem>
+      </IonFooter>
     </IonPage>
   )
 }

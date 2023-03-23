@@ -94,6 +94,7 @@ const Home: React.FC = () => {
         }}></Divider>
         <TodoLists></TodoLists>
       </IonContent>
+
     </IonPage>
   )
 }
