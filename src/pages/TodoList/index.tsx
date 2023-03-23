@@ -17,7 +17,7 @@ import {
   IonToolbar,
   isPlatform
 } from '@ionic/react'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { addOutline, checkmarkCircleOutline, ellipsisHorizontal, ellipsisVertical, trashOutline } from 'ionicons/icons'
 import { Menu, MenuItem } from '@mui/material'
 import { type RouteComponentProps } from 'react-router'
@@ -30,6 +30,16 @@ import { setStatusbarColor } from '../../theme/utils'
 import useIsDark from '../../hooks/useIsDark'
 import { darkenColor, lightenColor } from './utils'
 import TaskItems from '../../components/TaskItems'
+import { TodoTask } from '../../models/TodoTask'
+
+const getItems = (count: number): TodoTask[] =>
+  Array.from({ length: count }, (v, k) => k).map(k => ({
+    id: `list-${k}`,
+    title: `List ${k}`,
+    count: k,
+    order: k,
+    finished: false
+  }))
 
 type TodoPageProps = RouteComponentProps<{
   id: string
@@ -41,10 +51,15 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
     id = 'tasks',
     theme = 'green'
   } = match.params
+  const [isDesktop, setIsDesktop] = useState(false)
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(hover: hover) and (pointer: fine)')
+    setIsDesktop(mediaQuery.matches)
+  }, [])
   const isIOS = isPlatform('ios')
-  const isAndroid = isPlatform('android')
-  const isApp = isIOS || isAndroid
+  const isPWA = isPlatform('pwa')
   const [isAddingTask, setIsAddingTask] = React.useState(false)
+  const [currentText, setCurrentText] = React.useState('')
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const handleMenu = (event: React.MouseEvent<HTMLElement>): void => {
     if (!isIOS) {
@@ -79,15 +94,17 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
         height: '54px',
         color: themeUnit.text,
         marginTop: 10,
+        marginBottom: (isPWA && !isDesktop) ? 49 : 12,
       }
     }
+    // isAddingTask
     return {
       display: 'flex',
       alignItems: 'center',
       background: isDark ? '#212121' : 'white',
       marginLeft: 0,
       marginRight: 0,
-      height: '54px',
+      height: !isDesktop ? 54 : 70,
       color: isDark ? 'white' : '#767678',
       boxShadow: '0px 8px 12px rgba(0, 0, 0, 1)',
       marginTop: 1,
@@ -117,7 +134,6 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
     },
     footer: {
       bottom: -1,
-      height: isApp ? (isAddingTask ? 58 : 115) : 76,
       background: isAddingTask ? 'transparent' : themeUnit.background,
     },
     footerItem: getFooterItemStyle(),
@@ -132,11 +148,10 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
       borderWidth: 0
     },
     footerItem2: {
-      '--min-height': '100px',
+      '--min-height': '10px',
       display: isAddingTask ? 'block' : 'none',
-    }
+    },
   }
-
   const getTitle = (id: string) => {
     if (id === 'myday') {
       return <div style={styles.header}>
@@ -230,7 +245,8 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
             <IonTitle size="large">{title}</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <TaskItems theme={listTheme}></TaskItems>
+        <TaskItems items={getItems(20)} theme={listTheme}></TaskItems>
+        {isAddingTask && <div className="add-task-mask"></div>}
         {isIOS && sheetModel}
       </IonContent>
       <IonFooter mode="ios" className="ion-no-border" style={styles.footer}>
@@ -241,22 +257,23 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
             marginRight: 15
           }} aria-readonly></IonCheckbox>}
           <IonInput
-            onClick={() => {
-              if (isApp) {
-                setIsAddingTask(true)
-              }
+            value={currentText}
+            onIonChange={(e) => {
+              setCurrentText(e.detail.value!)
             }}
-            onBlur={() => {
-              if (isApp) {
+            onClick={() => {
+              setIsAddingTask(true)
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
                 setIsAddingTask(false)
               }
+            }}
+            onIonBlur={() => {
+              setIsAddingTask(false)
+              setCurrentText('')
             }} style={styles.newTaskInput} placeholder="Add a Task"></IonInput>
         </div>
-        <IonItem lines="none" style={styles.footerItem2}>
-          <div style={{ height: '100vh' }}>
-            <p></p>
-          </div>
-        </IonItem>
       </IonFooter>
     </IonPage>
   )

@@ -6,15 +6,6 @@ import useIsDark from '../../hooks/useIsDark'
 import TaskItem from './TaskItem'
 import { TodoTask } from '../../models/TodoTask'
 
-const getItems = (count: number): TodoTask[] =>
-  Array.from({ length: count }, (v, k) => k).map(k => ({
-    id: `list-${k}`,
-    title: `List ${k}`,
-    count: k,
-    order: k,
-    finished: false
-  }))
-
 // switch the order of the items in the array and return the new array
 const reorder = (list: TodoTask[], source: number, destination: number): TodoTask[] => {
   const result = Array.from(list)
@@ -37,9 +28,13 @@ const getListStyle = () => ({
 
 type TaskItemsProps = {
   theme: ListTheme
+  items: TodoTask[]
 }
-const TaskItems: React.FC<TaskItemsProps> = ({ theme }) => {
-  const [items, setItems] = useState<TodoTask[]>(getItems(20))
+const TaskItems: React.FC<TaskItemsProps> = ({
+  theme,
+  items: tasks
+}) => {
+  const [items, setItems] = useState<TodoTask[]>(tasks)
   const onDragEnd = (result: any) => {
     if (!result.destination) {
       return
