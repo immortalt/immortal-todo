@@ -59,6 +59,9 @@ const TaskItems: React.FC<TaskItemsProps> = ({ theme }) => {
   } else {
     radioColor = isDark ? themeUnit.text : themeUnit.background
   }
+  const onFinishTask = (task: TodoTask) => {
+    console.log('1')
+  }
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <StrictModeDroppable droppableId="droppable">
@@ -72,7 +75,7 @@ const TaskItems: React.FC<TaskItemsProps> = ({ theme }) => {
               <Draggable key={item.id} draggableId={item.id} index={index}>
                 {(provided, snapshot) => (
                   <TaskItem item={item} radioColor={radioColor} snapshot={snapshot}
-                            provided={provided}
+                            provided={provided} onFinishTask={onFinishTask}
                             key={item.id}/>
                 )}
               </Draggable>
