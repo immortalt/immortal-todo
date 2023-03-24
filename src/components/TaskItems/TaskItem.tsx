@@ -46,11 +46,9 @@ const TaskItem: React.FC<TaskItemProps> = (
     },
     title: {
       color: isDark ? '#e1e1e1' : '#34373d',
-      marginBottom: 2
     },
     subTitle: {
       color: isDark ? '#939393' : '#767678',
-      fontSize: 14
     },
     chechBoxDiv: {
       marginRight: 20,
@@ -64,7 +62,6 @@ const TaskItem: React.FC<TaskItemProps> = (
     }
   }
   const [checked, setChecked] = React.useState(task.completed)
-  const [clicked, setClicked] = React.useState(false)
   const [stared, setStared] = React.useState(false)
   const [showCheckboxAnimation, setShowCheckboxAnimation] = React.useState(!checked)
   const [enableRipple, setEnableRipple] = React.useState(false)
@@ -133,10 +130,10 @@ const TaskItem: React.FC<TaskItemProps> = (
     </div>
     <IonLabel className="titles">
       <div>
-        <div style={styles.title}>
+        <div className="task-item-title" style={styles.title}>
           {task.title}
         </div>
-        <div style={styles.subTitle}>
+        <div className="task-item-subtitle" style={styles.subTitle}>
           {'Tasks'}
         </div>
       </div>
