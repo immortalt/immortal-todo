@@ -6,7 +6,7 @@ import MuiAccordionDetails from '@mui/material/AccordionDetails'
 import React from 'react'
 
 export const Accordion = styled((props: AccordionProps) => (
-  <MuiAccordion disableGutters elevation={0} square {...props} />
+  <MuiAccordion disableGutters elevation={0} square {...props}  />
 ))(({ theme }) => ({
   border: `1px solid ${theme.palette.divider}`,
   '&:not(:last-child)': {
@@ -21,15 +21,19 @@ type CustomAccordionSummaryProps = AccordionSummaryProps & {
   iconColor: string;
 }
 
-export const AccordionSummary: React.FC<CustomAccordionSummaryProps> = styled((props: CustomAccordionSummaryProps) => (
-  <MuiAccordionSummary
+export const AccordionSummary: React.FC<CustomAccordionSummaryProps> = styled((props: CustomAccordionSummaryProps) => {
+  const {
+    iconColor,
+    ...otherProps
+  } = props
+  return <MuiAccordionSummary
     expandIcon={<ArrowForwardIosSharpIcon sx={{
       fontSize: '0.9rem',
-      color: props.iconColor
+      color: iconColor
     }}/>}
-    {...props}
+    {...otherProps}
   />
-))(({ theme }) => ({
+})(({ theme }) => ({
   backgroundColor:
     theme.palette.mode === 'dark'
       ? 'rgba(255, 255, 255, .05)'
