@@ -133,4 +133,10 @@
     margin-right: 10px;
 }
 
+.ion-accordion-completed {
+    background: transparent;
+}
 
+.ion-accordion-completed .completed-header {
+    background: transparent;
+}

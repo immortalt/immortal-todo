@@ -30,11 +30,13 @@ type TaskItemsProps = {
   theme: ListTheme
   tasks: TodoTask[]
   setTasks: (items: TodoTask[]) => void
+  onFinishTask: (task: TodoTask, completed: boolean) => void
 }
 const TaskItems: React.FC<TaskItemsProps> = ({
   theme,
   tasks,
-  setTasks
+  setTasks,
+  onFinishTask
 }) => {
   const onDragEnd = (result: any) => {
     if (!result.destination) {
@@ -55,9 +57,6 @@ const TaskItems: React.FC<TaskItemsProps> = ({
   } else {
     radioColor = isDark ? themeUnit.text : themeUnit.background
   }
-  const onFinishTask = (task: TodoTask) => {
-    console.log('1')
-  }
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <StrictModeDroppable droppableId="droppable">
@@ -70,7 +69,7 @@ const TaskItems: React.FC<TaskItemsProps> = ({
             {tasks.map((item: TodoTask, index: number) => (
               <Draggable key={item.id} draggableId={item.id} index={index}>
                 {(provided, snapshot) => (
-                  <TaskItem item={item} radioColor={radioColor} snapshot={snapshot}
+                  <TaskItem task={item} radioColor={radioColor} snapshot={snapshot}
                             provided={provided} onFinishTask={onFinishTask}
                             key={item.id}/>
                 )}

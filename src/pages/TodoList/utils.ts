@@ -1,5 +1,6 @@
 // color: #000000 ~ #ffffff
 // opacity: 0 ~ 1
+
 export function darkenColor (color: string, opacity: number): string {
   let r = parseInt(color.slice(1, 3), 16)
   let g = parseInt(color.slice(3, 5), 16)
@@ -27,4 +28,3 @@ export function lightenColor (color: string): string {
   const b2 = Math.round((b1 * 211) / 222)
   return `#${r2.toString(16)}${g2.toString(16)}${b2.toString(16)}`
 }
-

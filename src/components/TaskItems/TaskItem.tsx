@@ -4,23 +4,24 @@ import useIsDark from '../../hooks/useIsDark'
 import { TodoTask } from '../../models/TodoTask'
 import { DraggableProvided, DraggableStateSnapshot } from '../react-beautiful-dnd'
 import './TaskItem.css'
+import { Checkbox } from '@mui/material'
 import StarBorderIcon from '@mui/icons-material/StarBorder'
 import StarIcon from '@mui/icons-material/Star'
-import { Checkbox } from '@mui/material'
 
 type TaskItemProps = {
   snapshot: DraggableStateSnapshot,
   provided: DraggableProvided,
-  item: TodoTask
+  task: TodoTask
   radioColor: string
-  onFinishTask: (task: TodoTask) => void
+  onFinishTask: (task: TodoTask, finished: boolean) => void
 }
 const TaskItem: React.FC<TaskItemProps> = (
   {
     snapshot,
     provided,
-    item,
-    radioColor
+    task,
+    radioColor,
+    onFinishTask
   }) => {
   const isDark = useIsDark()
   const styles = {
@@ -62,7 +63,8 @@ const TaskItem: React.FC<TaskItemProps> = (
       ...draggableStyle,
     }
   }
-  const [checked, setChecked] = React.useState(false)
+  const [checked, setChecked] = React.useState(task.completed)
+  const [clicked, setClicked] = React.useState(false)
   const [stared, setStared] = React.useState(false)
   const [showCheckboxAnimation, setShowCheckboxAnimation] = React.useState(!checked)
   const [enableRipple, setEnableRipple] = React.useState(false)
@@ -89,20 +91,36 @@ const TaskItem: React.FC<TaskItemProps> = (
            setEnableRipple(false)
            e.stopPropagation()
          }}
-         onClick={() => {
-           setChecked(!checked)
-           if (!checked) {
+         onDoubleClick={(e) => {
+           console.log('double click')
+           e.stopPropagation()
+           e.preventDefault()
+         }
+         }
+         onClick={(e) => {
+           e.stopPropagation()
+           // prevent the quick click to stop the check process
+           if (checked == task.completed) {
+             setChecked(!task.completed)
+             // play animation
              setShowCheckboxAnimation(true)
              if (timerRef.current) {
                clearTimeout(timerRef.current)
+               timerRef.current = null
              }
+             // after 400ms, finish the task
              timerRef.current = setTimeout(() => {
+               onFinishTask(task, !task.completed)
                setShowCheckboxAnimation(false)
-             }, 500)
+               timerRef.current = null
+             }, 400)
+           } else {
+             // alert("Open the task to edit it")
            }
          }}
     >
-      <div className={`circle circle-1 ${checked ? 'checked' : ''}`}></div>
+      <div className={`circle circle-1 ${checked ? 'checked' : ''}`
+      }></div>
       <div className={`circle circle-2 ${checked ? 'checked' : ''}`}></div>
       <div className={`circle circle-3 ${checked ? 'checked' : ''}`}></div>
       <div className={`circle circle-4 ${checked ? 'checked' : ''}`}></div>
@@ -116,7 +134,7 @@ const TaskItem: React.FC<TaskItemProps> = (
     <IonLabel className="titles">
       <div>
         <div style={styles.title}>
-          {item.title}
+          {task.title}
         </div>
         <div style={styles.subTitle}>
           {'Tasks'}

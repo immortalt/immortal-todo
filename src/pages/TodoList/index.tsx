@@ -1,4 +1,6 @@
 import {
+  IonAccordion,
+  IonAccordionGroup,
   IonBackButton,
   IonButton,
   IonButtons,
@@ -17,7 +19,7 @@ import {
   IonToolbar,
   isPlatform
 } from '@ionic/react'
-import React, { createRef, useEffect, useRef, useState } from 'react'
+import React, { createRef, useEffect, useReducer, useRef, useState } from 'react'
 import { addOutline, checkmarkCircleOutline, ellipsisHorizontal, ellipsisVertical, trashOutline } from 'ionicons/icons'
 import { Menu, MenuItem } from '@mui/material'
 import { type RouteComponentProps } from 'react-router'
@@ -31,13 +33,14 @@ import { darkenColor, lightenColor } from './utils'
 import TaskItems from '../../components/TaskItems'
 import { TodoTask } from '../../models/TodoTask'
 import { setStatusbarColor } from '../../theme/utils'
+import { taskReducer } from './reducer'
 
 const getItems = (count: number): TodoTask[] =>
   Array.from({ length: count }, (v, k) => k).map(k => ({
     id: `list-${k}`,
     title: `List ${k}`,
     order: count - k,
-    finished: false
+    completed: false
   }))
 
 type TodoPageProps = RouteComponentProps<{
@@ -60,7 +63,16 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
   const isPWA = isPlatform('pwa')
   const [isAddingTask, setIsAddingTask] = React.useState(false)
   const [currentText, setCurrentText] = React.useState('')
-  const [tasks, setTasks] = useState<TodoTask[]>(getItems(13).sort((a, b) => b.order - a.order))
+
+  const [{
+    tasks,
+    completedTasks
+  }, dispatch] = useReducer(taskReducer,
+    {
+      tasks: getItems(5).sort((a, b) => b.order - a.order),
+      completedTasks: []
+    }
+  )
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const handleMenu = (event: React.MouseEvent<HTMLElement>): void => {
     if (!isIOS) {
@@ -191,7 +203,10 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
   const title = getTitle(id)
   const addTask = (task: TodoTask) => {
     // add task to tasks
-    setTasks([task, ...tasks])
+    dispatch({
+      type: 'add',
+      task
+    })
   }
   // modal related
   const modal = useRef<HTMLIonModalElement>(null)
@@ -225,6 +240,25 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
     contentRef.current?.scrollToTop(500)
   }
 
+  const onFinishTask = (task: TodoTask, completed: boolean) => {
+    dispatch({
+      type: 'complete',
+      task,
+      completed
+    })
+  }
+  const setTasks = (tasks: TodoTask[]) => {
+    dispatch({
+      type: 'setTasks',
+      tasks
+    })
+  }
+  const setCompletedTasks = (tasks: TodoTask[]) => {
+    dispatch({
+      type: 'setCompletedTasks',
+      tasks
+    })
+  }
   return (
     <IonPage>
       <IonHeader mode="ios" className="ion-no-border" style={styles.header}>
@@ -284,7 +318,18 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
             <IonTitle size="large">{title}</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <TaskItems tasks={tasks} theme={listTheme} setTasks={setTasks}></TaskItems>
+        <TaskItems tasks={tasks} theme={listTheme} setTasks={setTasks} onFinishTask={onFinishTask}></TaskItems>
+        {completedTasks.length > 0 && <IonAccordionGroup value="completed">
+          <IonAccordion className="ion-accordion-completed" value="completed">
+            <IonItem className="completed-header" slot="header">
+              <IonLabel>Completed</IonLabel>
+            </IonItem>
+            <div slot="content">
+              <TaskItems tasks={completedTasks} theme={listTheme} setTasks={setCompletedTasks}
+                         onFinishTask={onFinishTask}></TaskItems>
+            </div>
+          </IonAccordion>
+        </IonAccordionGroup>}
         {isAddingTask && <div className="add-task-mask"></div>}
         {isIOS && sheetModel}
       </IonContent>
@@ -311,7 +356,7 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
                   id: new Date().getTime().toString(),
                   title: currentText,
                   order: tasks.length,
-                  finished: false,
+                  completed: false,
                 })
                 setCurrentText('')
                 scrollToTop()
