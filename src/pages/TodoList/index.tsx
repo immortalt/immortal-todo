@@ -1,6 +1,4 @@
 import {
-  IonAccordion,
-  IonAccordionGroup,
   IonBackButton,
   IonButton,
   IonButtons,
@@ -15,6 +13,7 @@ import {
   IonList,
   IonModal,
   IonPage,
+  IonRippleEffect,
   IonTitle,
   IonToolbar,
   isPlatform
@@ -34,6 +33,7 @@ import TaskItems from '../../components/TaskItems'
 import { TodoTask } from '../../models/TodoTask'
 import { setStatusbarColor } from '../../theme/utils'
 import { taskReducer } from './reducer'
+import { Accordion, AccordionDetails, AccordionSummary } from './Accordion'
 
 const getItems = (count: number): TodoTask[] =>
   Array.from({ length: count }, (v, k) => k).map(k => ({
@@ -96,7 +96,7 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
     if (isDark) {
       return '#212121'
     } else {
-      return themeUnit.reversed ? lightenColor(themeUnit.background) : 'rgba(0, 0, 0, 0.2)'
+      return themeUnit.reversed ? lightenColor(themeUnit.background) : 'rgba(0, 0, 0, 0.1)'
     }
   }
   const getContentStyle = () => {
@@ -259,6 +259,12 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
       tasks
     })
   }
+  const [completedExpanded, setCompletedExpanded] = React.useState<string | false>('panel_completed')
+  const handleChange =
+    (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
+      setCompletedExpanded(newExpanded ? panel : false)
+    }
+
   return (
     <IonPage>
       <IonHeader mode="ios" className="ion-no-border" style={styles.header}>
@@ -319,17 +325,32 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
           </IonToolbar>
         </IonHeader>
         <TaskItems tasks={tasks} theme={listTheme} setTasks={setTasks} onFinishTask={onFinishTask}></TaskItems>
-        {completedTasks.length > 0 && <IonAccordionGroup value="completed">
-          <IonAccordion className="ion-accordion-completed" value="completed">
-            <IonItem className="completed-header" slot="header">
-              <IonLabel>Completed</IonLabel>
-            </IonItem>
-            <div slot="content">
+        {completedTasks.length > 0 &&
+          <Accordion expanded={completedExpanded === 'panel_completed'} onChange={handleChange('panel_completed')}
+                     style={{
+                       background: themeUnit.background,
+                       borderWidth: 0
+                     }}>
+            <AccordionSummary className="ion-activatable ripple-parent rounded-rectangle" style={{
+              background: themeUnit.background,
+              borderWidth: 0,
+            }} iconColor={isDark ? themeUnit.text : 'white'} aria-controls="panel1d-content" id="panel1d-header">
+              <IonRippleEffect></IonRippleEffect>
+              <div style={{
+                color: themeUnit.text,
+                fontWeight: 500
+              }}>Completed {completedTasks.length}</div>
+            </AccordionSummary>
+            <AccordionDetails style={{
+              background: themeUnit.background,
+              borderWidth: 0,
+              padding: 0
+            }}>
               <TaskItems tasks={completedTasks} theme={listTheme} setTasks={setCompletedTasks}
                          onFinishTask={onFinishTask}></TaskItems>
-            </div>
-          </IonAccordion>
-        </IonAccordionGroup>}
+            </AccordionDetails>
+          </Accordion>
+        }
         {isAddingTask && <div className="add-task-mask"></div>}
         {isIOS && sheetModel}
       </IonContent>

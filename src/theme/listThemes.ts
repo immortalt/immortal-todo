@@ -5,8 +5,6 @@ export type ThemeUnit = {
   background: string;
   // text color in list toolbar
   text: string;
-  // inputbar color
-  inputItem?: string;
   // if is reversed color theme
   reversed?: boolean;
 }
@@ -50,7 +48,6 @@ export const listThemes: themeDict = {
       'icon': '#166F6B',
       'background': '#D4F1EF',
       'text': '#166F6B',
-      'inputItem': '#c8e9e7',
       reversed: true,
     },
     dark: {

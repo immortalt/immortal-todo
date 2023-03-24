@@ -24,6 +24,20 @@ const TaskItem: React.FC<TaskItemProps> = (
     onFinishTask
   }) => {
   const isDark = useIsDark()
+  const getTitleColor = () => {
+    if (task.completed) {
+      return isDark ? '#939393' : '#767678'
+    } else {
+      return isDark ? '#e1e1e1' : '#34373d'
+    }
+  }
+  const getSubtitleColor = () => {
+    if (task.completed) {
+      return isDark ? '#888888' : '#838385'
+    } else {
+      return isDark ? '#939393' : '#767678'
+    }
+  }
   const styles = {
     star: {
       fontSize: 20,
@@ -45,10 +59,11 @@ const TaskItem: React.FC<TaskItemProps> = (
       '--border-color-checked': radioColor,
     },
     title: {
-      color: isDark ? '#e1e1e1' : '#34373d',
+      color: getTitleColor(),
+      textDecoration: task.completed ? 'line-through' : 'none'
     },
     subTitle: {
-      color: isDark ? '#939393' : '#767678',
+      color: getSubtitleColor(),
     },
     chechBoxDiv: {
       marginRight: 20,

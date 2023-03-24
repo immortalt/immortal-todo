@@ -61,3 +61,9 @@
     z-index: 999;
     overflow: hidden;
 }
+
+.completed-task-accordion-item {
+    flex-direction: row-reverse;
+
+}
+

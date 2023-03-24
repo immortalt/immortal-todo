@@ -136,14 +136,6 @@
     margin-right: 10px;
 }
 
-.ion-accordion-completed {
-    background: transparent;
-}
-
-.ion-accordion-completed .completed-header {
-    background: transparent;
-}
-
 .task-item-title {
     margin-bottom: 2px;
     white-space: nowrap;
