@@ -10,7 +10,7 @@ import {
   IonToolbar,
   isPlatform,
 } from '@ionic/react'
-import './index.css'
+import './index.scss'
 
 // A hack to enable the keyboard to open on mobile devices, especially iOS
 // refer to https://stackoverflow.com/a/55425845/7593714

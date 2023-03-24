@@ -22,7 +22,7 @@ import '@ionic/react/css/flex-utils.css'
 import '@ionic/react/css/display.css'
 
 /* Theme variables */
-import './theme/variables.css'
+import './theme/variables.scss'
 import React from 'react'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import useIsDark from './hooks/useIsDark'

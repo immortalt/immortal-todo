@@ -24,7 +24,7 @@ import { Menu, MenuItem } from '@mui/material'
 import { type RouteComponentProps } from 'react-router'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemIcon from '@mui/material/ListItemIcon'
-import './index.css'
+import './index.scss'
 import DelayDisplay from '../../components/DelayDisplay'
 import { type ListTheme, listThemes } from '../../theme/listThemes'
 import useIsDark from '../../hooks/useIsDark'
@@ -364,8 +364,8 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
           <IonInput
             value={currentText}
             onIonChange={(e) => {
-              if (e) {
-                setCurrentText(e.detail.value!)
+              if (e?.detail?.value) {
+                setCurrentText(e.detail.value)
               }
             }}
             onIonFocus={() => {
