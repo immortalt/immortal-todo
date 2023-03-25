@@ -26,7 +26,7 @@ export function taskReducer (state: TaskState, action: TaskAction): TaskState {
       const newTasks = [...state.completedTasks]
       newTasks.splice(index, 1)
       return {
-        tasks: [action.task, ...state.tasks,],
+        tasks: [...state.tasks, action.task,],
         completedTasks: newTasks,
       }
     }

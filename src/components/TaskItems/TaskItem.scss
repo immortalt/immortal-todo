@@ -60,7 +60,7 @@
 
   .checked {
     &.circle-1, &.circle-2, &.circle-3, &.circle-4, &.circle-5, &.circle-6 {
-      animation: checkbox-circle 0.4s ease;
+      animation: checkbox-circle 0.3s ease;
     }
   }
 
@@ -148,4 +148,45 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+$move-to-y: var(--move-to-y);
+@keyframes move-item {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: $move-to-y;
+  }
+}
+
+.move-item {
+  z-index: 99999;
+  animation: move-item 0.2s ease forwards;
+}
+
+@keyframes move-down {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(66px);
+  }
+}
+
+.move-down {
+  animation: move-down 0.2s ease forwards;
+}
+
+@keyframes move-up {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-66px);
+  }
+}
+
+.move-up {
+  animation: move-up 0.2s ease forwards;
 }

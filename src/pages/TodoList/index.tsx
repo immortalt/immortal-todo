@@ -264,7 +264,25 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
     (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
       setCompletedExpanded(newExpanded ? panel : false)
     }
-
+  const [movingStatus, setMovingStatus] = React.useState<{
+    index: number,
+    isInCompleted: boolean
+  }>({
+    index: -1,
+    isInCompleted: false
+  })
+  const onMoveTask = (index: number, isInCompleted: boolean) => {
+    // console.log('onMoveTask', index, isInCompleted)
+    setMovingStatus({
+      index,
+      isInCompleted,
+    })
+  }
+  let moveClassname = ''
+  if (movingStatus.index !== -1) {
+    moveClassname = ` move-${movingStatus.isInCompleted ? 'down' : 'up'}`
+    console.log('moveClassname', moveClassname)
+  }
   return (
     <IonPage>
       <IonHeader mode="ios" className="ion-no-border" style={styles.header}>
@@ -324,33 +342,38 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
             <IonTitle size="large">{title}</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <TaskItems tasks={tasks} theme={listTheme} setTasks={setTasks} onFinishTask={onFinishTask}></TaskItems>
-        {completedTasks.length > 0 &&
-          <Accordion expanded={completedExpanded === 'panel_completed'} onChange={handleChange('panel_completed')}
-                     style={{
-                       background: themeUnit.background,
-                       borderWidth: 0
-                     }}>
-            <AccordionSummary className="ion-activatable ripple-parent rounded-rectangle" style={{
-              background: themeUnit.background,
-              borderWidth: 0,
-            }} iconColor={isDark ? themeUnit.text : 'white'} aria-controls="panel1d-content" id="panel1d-header">
-              <IonRippleEffect></IonRippleEffect>
-              <div style={{
-                color: themeUnit.text,
-                fontWeight: 500
-              }}>Completed {completedTasks.length}</div>
-            </AccordionSummary>
-            <AccordionDetails style={{
-              background: themeUnit.background,
-              borderWidth: 0,
-              padding: 0
-            }}>
-              <TaskItems tasks={completedTasks} theme={listTheme} setTasks={setCompletedTasks}
-                         onFinishTask={onFinishTask}></TaskItems>
-            </AccordionDetails>
-          </Accordion>
-        }
+        <TaskItems isInCompleted={false} tasks={tasks} theme={listTheme} setTasks={setTasks}
+                   movingStatus={movingStatus} onMoveTask={onMoveTask} onFinishTask={onFinishTask}
+                   taskLength={tasks.length}
+        ></TaskItems>
+        <Accordion expanded={completedExpanded === 'panel_completed'}
+                   onChange={handleChange('panel_completed')}
+                   style={{
+                     background: themeUnit.background,
+                     borderWidth: 0,
+                     display: completedTasks.length > 0 ? 'block' : 'none'
+                   }}>
+          <AccordionSummary className={'ion-activatable ripple-parent rounded-rectangle' + moveClassname} style={{
+            background: themeUnit.background,
+            borderWidth: 0,
+          }} iconColor={isDark ? themeUnit.text : 'white'} aria-controls="panel1d-content" id="panel1d-header">
+            <IonRippleEffect></IonRippleEffect>
+            <div style={{
+              color: themeUnit.text,
+              fontWeight: 500
+            }}>Completed {completedTasks.length}</div>
+          </AccordionSummary>
+          <AccordionDetails style={{
+            background: themeUnit.background,
+            borderWidth: 0,
+            padding: 0
+          }}>
+            <TaskItems isInCompleted={true} tasks={completedTasks} theme={listTheme} setTasks={setCompletedTasks}
+                       movingStatus={movingStatus} onMoveTask={onMoveTask} onFinishTask={onFinishTask}
+                       taskLength={tasks.length}></TaskItems>
+          </AccordionDetails>
+        </Accordion>
+
         {isAddingTask && <div className="add-task-mask"></div>}
         {isIOS && sheetModel}
       </IonContent>

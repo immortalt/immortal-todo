@@ -61,3 +61,30 @@
 .completed-task-accordion-item {
   flex-direction: row-reverse;
 }
+
+
+@keyframes move-down {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(66px);
+  }
+}
+
+.move-down {
+  animation: move-down 0.2s ease forwards;
+}
+
+@keyframes move-up {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-66px);
+  }
+}
+
+.move-up {
+  animation: move-up 0.2s ease forwards;
+}

@@ -13,7 +13,12 @@ type TaskItemProps = {
   provided: DraggableProvided,
   task: TodoTask
   radioColor: string
+  onMoveTask: (index: number, isInCompleted: boolean) => void
   onFinishTask: (task: TodoTask, finished: boolean) => void
+  index: number
+  taskLength: number
+  isInCompleted: boolean
+  className?: string
 }
 const TaskItem: React.FC<TaskItemProps> = (
   {
@@ -21,8 +26,14 @@ const TaskItem: React.FC<TaskItemProps> = (
     provided,
     task,
     radioColor,
-    onFinishTask
+    onMoveTask,
+    onFinishTask,
+    className,
+    isInCompleted,
+    index,
+    taskLength,
   }) => {
+  const [checked, setChecked] = React.useState(task.completed)
   const isDark = useIsDark()
   const getTitleColor = () => {
     if (task.completed) {
@@ -71,27 +82,37 @@ const TaskItem: React.FC<TaskItemProps> = (
     }
   }
   const getItemStyle = (isDragging: boolean, draggableStyle: any) => {
+    let targetY = 0
+    if (!isInCompleted) {
+      targetY += (66 * (taskLength - (index + 1))) + 48
+    } else {
+      targetY -= (66 * index) + 48
+    }
     return {
       background: isDark ? '#212121' : 'white',
       ...draggableStyle,
+      '--move-to-y': `translateY(${targetY}px)`,
     }
   }
-  const [checked, setChecked] = React.useState(task.completed)
   const [stared, setStared] = React.useState(false)
   const [showCheckboxAnimation, setShowCheckboxAnimation] = React.useState(!checked)
+  const [showMoveAnimation, setShowMoveAnimation] = React.useState<string>()
   const [enableRipple, setEnableRipple] = React.useState(false)
-  const timerRef = useRef<any>()
-  return <div className={'todotask-item ion-activatable ripple-parent'} ref={provided.innerRef}
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-              style={getItemStyle(
-                snapshot.isDragging,
-                provided.draggableProps.style
-              )}
-              onTouchStart={() => {
-                console.log('IonItem clicked')
-                setEnableRipple(true)
-              }}
+  const animationTimerRef = useRef<any>()
+  const finishTimerRef = useRef<any>()
+  return <div
+    className={'todotask-item ion-activatable ripple-parent' + (showMoveAnimation ? ` ${showMoveAnimation}` : '') + (className ? ' ' + className : '')}
+    ref={provided.innerRef}
+    {...provided.draggableProps}
+    {...provided.dragHandleProps}
+    style={getItemStyle(
+      snapshot.isDragging,
+      provided.draggableProps.style
+    )}
+    onTouchStart={() => {
+      console.log('IonItem clicked')
+      setEnableRipple(true)
+    }}
   >
     {enableRipple && <IonRippleEffect style={{ borderRadius: 8 }}></IonRippleEffect>}
     <div className={showCheckboxAnimation ? 'finished my-checkbox' : 'finished'}
@@ -114,18 +135,30 @@ const TaskItem: React.FC<TaskItemProps> = (
            // prevent the quick click to stop the check process
            if (checked == task.completed) {
              setChecked(!task.completed)
-             // play animation
+             // play checkbox animation
              setShowCheckboxAnimation(true)
-             if (timerRef.current) {
-               clearTimeout(timerRef.current)
-               timerRef.current = null
+             if (animationTimerRef.current) {
+               clearTimeout(animationTimerRef.current)
+               animationTimerRef.current = null
              }
-             // after 400ms, finish the task
-             timerRef.current = setTimeout(() => {
-               onFinishTask(task, !task.completed)
+             // after 200ms, move the task
+             animationTimerRef.current = setTimeout(() => {
+               // show the item move animation
+               setShowMoveAnimation('move-item')
+               onMoveTask(index, isInCompleted)
+               if (finishTimerRef.current) {
+                 clearTimeout(finishTimerRef.current)
+                 finishTimerRef.current = null
+               }
+               // after 200ms, finish the task
+               finishTimerRef.current = setTimeout(() => {
+                 onMoveTask(-1, false)
+                 onFinishTask(task, !task.completed)
+                 finishTimerRef.current = null
+               }, 200)
                setShowCheckboxAnimation(false)
-               timerRef.current = null
-             }, 400)
+               animationTimerRef.current = null
+             }, 200)
            } else {
              // alert("Open the task to edit it")
            }

@@ -5,6 +5,7 @@ import { ListTheme } from '../../theme/listThemes'
 import useIsDark from '../../hooks/useIsDark'
 import TaskItem from './TaskItem'
 import { TodoTask } from '../../models/TodoTask'
+import './index.scss'
 
 // switch the order of the items in the array and return the new array
 const reorder = (list: TodoTask[], source: number, destination: number): TodoTask[] => {
@@ -30,13 +31,21 @@ type TaskItemsProps = {
   theme: ListTheme
   tasks: TodoTask[]
   setTasks: (items: TodoTask[]) => void
+  movingStatus: { index: number, isInCompleted: boolean }
+  onMoveTask: (index: number, isInCompleted: boolean) => void
   onFinishTask: (task: TodoTask, completed: boolean) => void
+  isInCompleted: boolean,
+  taskLength: number,
 }
 const TaskItems: React.FC<TaskItemsProps> = ({
   theme,
   tasks,
   setTasks,
-  onFinishTask
+  movingStatus,
+  onMoveTask: onMoveTaskRoot,
+  onFinishTask,
+  isInCompleted,
+  taskLength,
 }) => {
   const onDragEnd = (result: any) => {
     if (!result.destination) {
@@ -57,6 +66,9 @@ const TaskItems: React.FC<TaskItemsProps> = ({
   } else {
     radioColor = isDark ? themeUnit.text : themeUnit.background
   }
+  const onMoveTask = (index: number, isInCompleted: boolean) => {
+    onMoveTaskRoot(index, isInCompleted)
+  }
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <StrictModeDroppable droppableId="droppable">
@@ -68,11 +80,45 @@ const TaskItems: React.FC<TaskItemsProps> = ({
           >
             {tasks.map((item: TodoTask, index: number) => (
               <Draggable key={item.id} draggableId={item.id} index={index}>
-                {(provided, snapshot) => (
-                  <TaskItem task={item} radioColor={radioColor} snapshot={snapshot}
-                            provided={provided} onFinishTask={onFinishTask}
-                            key={item.id}/>
-                )}
+                {(provided, snapshot) => {
+                  // handle the move animation
+                  let moveClassname = ''
+                  // what will items in completed behave like
+                  if (isInCompleted) {
+                    // moving from completed to tasks
+                    if (movingStatus.isInCompleted) {
+                      if (movingStatus.index > 0) {
+                        if (movingStatus.index !== -1 && movingStatus.index !== index && index < movingStatus.index) {
+                          moveClassname = ` move-down`
+                        }
+                      }
+                    }
+                    // moving from tasks to completed
+                    else {
+                      // do nothing
+                    }
+                  }
+                  // what will items in tasks behave like
+                  else {
+                    // moving from completed to tasks
+                    if (movingStatus.isInCompleted) {
+                      // do nothing
+                    }
+                    // moving from tasks to completed
+                    else {
+                      if (movingStatus.index !== -1 && movingStatus.index !== index && index > movingStatus.index) {
+                        moveClassname = ` move-up`
+                      }
+                    }
+                  }
+                  return <TaskItem onMoveTask={onMoveTask}
+                                   className={isInCompleted ? 'completed-task-item' + moveClassname : 'task-item' + moveClassname}
+                                   task={item}
+                                   radioColor={radioColor} snapshot={snapshot}
+                                   provided={provided} onFinishTask={onFinishTask}
+                                   key={item.id} isInCompleted={isInCompleted} index={index} taskLength={taskLength}
+                  />
+                }}
               </Draggable>
             ))}
             {provided.placeholder}
