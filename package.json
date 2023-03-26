@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@babel/runtime": "^7.9.2",
+    "@capacitor/android": "4.7.0",
     "@capacitor/app": "4.1.1",
     "@capacitor/core": "4.7.0",
     "@capacitor/haptics": "4.1.0",

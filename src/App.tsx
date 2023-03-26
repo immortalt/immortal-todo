@@ -1,5 +1,5 @@
 import { Redirect, Route } from 'react-router-dom'
-import { IonApp, IonRouterOutlet, isPlatform, setupIonicReact } from '@ionic/react'
+import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react'
 import { IonReactRouter } from '@ionic/react-router'
 import Home from './pages/Home'
 import Search from './pages/Search'
@@ -26,7 +26,7 @@ import './theme/variables.scss'
 import React from 'react'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import useIsDark from './hooks/useIsDark'
-import { Switch } from 'react-router'
+import EditTodoTask from './pages/EditTodoTask'
 
 setupIonicReact()
 const darkTheme = createTheme({
@@ -47,6 +47,7 @@ const lightTheme = createTheme({
 const App: React.FC = () => {
   const isDark = useIsDark()
   const routes = <>
+    <Route exact path="/task/:id" component={EditTodoTask}/>
     <Route exact path="/todo/:id/:theme" component={TodoList}/>
     <Route exact path="/home" component={Home}/>
     <Route exact path="/search" component={Search}/>
@@ -57,9 +58,8 @@ const App: React.FC = () => {
   return (<ThemeProvider theme={isDark ? darkTheme : lightTheme}>
       <IonApp>
         <IonReactRouter>
-          <IonRouterOutlet>
-            {/*use switch disable the animation but prevent the shake error after swipe back on iOS*/}
-            {isPlatform('ios') ? <Switch>{routes}</Switch> : routes}
+          <IonRouterOutlet animated>
+            {routes}
           </IonRouterOutlet>
         </IonReactRouter>
       </IonApp>
