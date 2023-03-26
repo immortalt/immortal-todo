@@ -1,6 +1,5 @@
 // color: #000000 ~ #ffffff
 // opacity: 0 ~ 1
-
 export function darkenColor (color: string, opacity: number): string {
   let r = parseInt(color.slice(1, 3), 16)
   let g = parseInt(color.slice(3, 5), 16)

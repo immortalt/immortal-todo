@@ -1,20 +1,30 @@
-.todo-side-menu ul {
-  padding: 0;
-}
+$font-size-default: 16px;
+$animation-duration: 0.2s;
+$background: #fff;
+$dark-background: #212121;
+$text: #333;
+$dark-text: #fff;
+$move-distance: 66px;
 
-.todo-side-menu li {
-  padding: 8px 8px 8px 9px;
-  font-size: 16px;
-
-  ion-icon {
-    font-size: 22px;
-    --ionicon-stroke-width: 40px;
+.todo-side-menu {
+  ul {
+    padding: 0;
   }
-}
 
-.todo-side-menu span {
-  font-size: 16px;
-  margin-left: -2px;
+  li {
+    padding: 8px 8px 8px 9px;
+    font-size: $font-size-default;
+
+    ion-icon {
+      font-size: 22px;
+      --ionicon-stroke-width: 40px;
+    }
+  }
+
+  span {
+    font-size: $font-size-default;
+    margin-left: -2px;
+  }
 }
 
 .content-header {
@@ -62,29 +72,77 @@
   flex-direction: row-reverse;
 }
 
-
 @keyframes move-down {
-  0% {
+  0%, 100% {
     transform: translateY(0);
   }
+
   100% {
-    transform: translateY(66px);
+    transform: translateY($move-distance);
   }
 }
 
 .move-down {
-  animation: move-down 0.2s ease forwards;
+  animation: move-down $animation-duration ease forwards;
 }
 
 @keyframes move-up {
-  0% {
+  0%, 100% {
     transform: translateY(0);
   }
+
   100% {
-    transform: translateY(-66px);
+    transform: translateY(-$move-distance);
   }
 }
 
 .move-up {
-  animation: move-up 0.2s ease forwards;
+  animation: move-up $animation-duration ease forwards;
+}
+
+.page {
+  --background: $background;
+  --dark-background: $dark-background;
+  --text: $text;
+  --dark-text: $dark-text;
+
+  .header {
+    background-color: var(--background);
+  }
+
+  .content {
+    background-color: var(--background);
+    padding-top: var(--padding-top);
+  }
+
+  .footer {
+    background-color: var(--background);
+    height: 54px;
+    color: var(--text);
+    margin-top: 10px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+
+    &.adding-task {
+      background-color: var(--dark-background);
+      color: var(--dark-text);
+      height: 70px;
+      margin-top: 0;
+      margin-bottom: 0;
+      border-radius: 0;
+      box-shadow: 0px 8px 12px rgba(0, 0, 0, 1);
+    }
+  }
+
+  .list-item {
+    color: var(--text);
+  }
+
+  &.dark-mode {
+    --background: $dark-background;
+    --text: $dark-text;
+  }
 }

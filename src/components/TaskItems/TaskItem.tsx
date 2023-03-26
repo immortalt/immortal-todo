@@ -7,6 +7,7 @@ import './TaskItem.scss'
 import { Checkbox } from '@mui/material'
 import StarBorderIcon from '@mui/icons-material/StarBorder'
 import StarIcon from '@mui/icons-material/Star'
+import { useHistory } from 'react-router-dom'
 
 type TaskItemProps = {
   snapshot: DraggableStateSnapshot,
@@ -100,6 +101,8 @@ const TaskItem: React.FC<TaskItemProps> = (
   const [enableRipple, setEnableRipple] = React.useState(false)
   const animationTimerRef = useRef<any>()
   const finishTimerRef = useRef<any>()
+  const history = useHistory()
+  const navTimerrRef = useRef<any>()
   return <div
     className={'todotask-item ion-activatable ripple-parent' + (showMoveAnimation ? ` ${showMoveAnimation}` : '') + (className ? ' ' + className : '')}
     ref={provided.innerRef}
@@ -110,7 +113,14 @@ const TaskItem: React.FC<TaskItemProps> = (
       provided.draggableProps.style
     )}
     onTouchStart={() => {
-      console.log('IonItem clicked')
+      if (navTimerrRef.current) {
+        clearTimeout(navTimerrRef.current)
+        navTimerrRef.current = null
+      }
+      navTimerrRef.current = setTimeout(() => {
+        history.push(`/task/${task.id}`)
+        navTimerrRef.current = null
+      }, 300)
       setEnableRipple(true)
     }}
   >

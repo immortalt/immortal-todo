@@ -14,7 +14,7 @@ import TodoLists from '../../components/TodoLists'
 import React, { useEffect } from 'react'
 import { personCircle, search, } from 'ionicons/icons'
 import { Divider } from '@mui/material'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import quickLists from '../../theme/quickLists'
 import { setStatusbarColor } from '../../theme/utils'
 import useIsDark from '../../hooks/useIsDark'
@@ -35,6 +35,8 @@ const Home: React.FC = () => {
   useEffect(() => {
     setStatusbarColor(isDark ? '#080808' : '#ffffff')
   }, [isDark, window.location.href])
+  const history = useHistory()
+  const navTimerrRef = React.useRef<any>(null)
   return (
     <IonPage>
       <IonHeader className="ion-no-border">
@@ -65,7 +67,18 @@ const Home: React.FC = () => {
           } = item
           const time = isDark ? 'dark' : 'light'
           return (
-            <IonItem key={id} style={itemStyle} routerLink={`/todo/${id}/${theme}`} button detail={false}
+            <IonItem key={id} style={itemStyle}
+                     onClick={() => {
+                       if (navTimerrRef.current) {
+                         clearTimeout(navTimerrRef.current)
+                         navTimerrRef.current = null
+                       }
+                       navTimerrRef.current = setTimeout(() => {
+                         history.push(`/todo/${id}/${theme}`)
+                         navTimerrRef.current = null
+                       }, 200)
+                     }}
+                     button detail={false}
                      lines="none">
               <IonIcon style={{
                 color: listThemes[theme][time].icon,
