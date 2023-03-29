@@ -1,6 +1,5 @@
-import { Redirect, Route } from 'react-router-dom'
-import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react'
-import { IonReactRouter } from '@ionic/react-router'
+import { Redirect, Route, Switch } from 'react-router-dom'
+import { IonApp, IonRouterOutlet, isPlatform, setupIonicReact } from '@ionic/react'
 import Home from './pages/Home'
 import Search from './pages/Search'
 import TodoList from './pages/TodoList'
@@ -27,8 +26,12 @@ import React from 'react'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import useIsDark from './hooks/useIsDark'
 import EditTodoTask from './pages/EditTodoTask'
+import './App.css'
+import { IonReactRouter } from '@ionic/react-router'
 
-setupIonicReact()
+setupIonicReact({
+  swipeBackEnabled: false,
+})
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
@@ -46,6 +49,7 @@ const lightTheme = createTheme({
 })
 const App: React.FC = () => {
   const isDark = useIsDark()
+  const isIOS = isPlatform('ios')
   const routes = <>
     <Route exact path="/task/:id" component={EditTodoTask}/>
     <Route exact path="/todo/:id/:theme" component={TodoList}/>
@@ -53,14 +57,15 @@ const App: React.FC = () => {
     <Route exact path="/search" component={Search}/>
     <Route exact path="/">
       <Redirect to="/home"/>
-    </Route>
-  </>
+    </Route></>
   return (<ThemeProvider theme={isDark ? darkTheme : lightTheme}>
       <IonApp>
         <IonReactRouter>
-          <IonRouterOutlet animated>
+          {!isIOS ? <IonRouterOutlet>
             {routes}
-          </IonRouterOutlet>
+          </IonRouterOutlet> : <Switch>
+            {routes}
+          </Switch>}
         </IonReactRouter>
       </IonApp>
     </ThemeProvider>

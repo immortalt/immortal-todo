@@ -113,6 +113,9 @@ const TaskItem: React.FC<TaskItemProps> = (
       provided.draggableProps.style
     )}
     onTouchStart={() => {
+      setEnableRipple(true)
+    }}
+    onClick={() => {
       if (navTimerrRef.current) {
         clearTimeout(navTimerrRef.current)
         navTimerrRef.current = null
@@ -120,8 +123,7 @@ const TaskItem: React.FC<TaskItemProps> = (
       navTimerrRef.current = setTimeout(() => {
         history.push(`/task/${task.id}`)
         navTimerrRef.current = null
-      }, 300)
-      setEnableRipple(true)
+      }, 200)
     }}
   >
     {enableRipple && <IonRippleEffect style={{ borderRadius: 8 }}></IonRippleEffect>}

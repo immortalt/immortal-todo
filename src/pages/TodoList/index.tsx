@@ -34,6 +34,7 @@ import { TodoTask } from '../../models/TodoTask'
 import { setStatusbarColor } from '../../theme/utils'
 import { taskReducer } from './reducer'
 import { Accordion, AccordionDetails, AccordionSummary } from './Accordion'
+import { useHistory } from 'react-router-dom'
 
 const getItems = (count: number): TodoTask[] =>
   Array.from({ length: count }, (v, k) => k).map(k => ({
@@ -283,6 +284,7 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
     moveClassname = ` move-${movingStatus.isInCompleted ? 'down' : 'up'}`
     console.log('moveClassname', moveClassname)
   }
+  const history = useHistory()
   return (
     <IonPage>
       <IonHeader mode="ios" className="ion-no-border" style={styles.header}>
