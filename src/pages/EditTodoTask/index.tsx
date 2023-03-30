@@ -1,4 +1,16 @@
-import { IonBackButton, IonButtons, IonContent, IonFooter, IonHeader, IonPage, IonToolbar } from '@ionic/react'
+import {
+  IonBackButton,
+  IonButtons,
+  IonContent,
+  IonFooter,
+  IonHeader,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonPage,
+  IonToolbar,
+  isPlatform
+} from '@ionic/react'
 import React, { useEffect } from 'react'
 import { type RouteComponentProps } from 'react-router'
 import './index.scss'
@@ -20,6 +32,7 @@ const EditTodoTask: React.FC<TodoPageProps> = ({ match }) => {
     theme = 'green',
     from = 'Home'
   } = match.params
+  const isIOS = isPlatform('ios')
   const isDark = useIsDark()
   const listTheme: ListTheme = listThemes[theme]
   const themeUnit = isDark ? listTheme.dark : listTheme.light
@@ -43,7 +56,7 @@ const EditTodoTask: React.FC<TodoPageProps> = ({ match }) => {
           height: 39
         }}>
           <IonButtons slot="start">
-            <IonBackButton text={from} style={{ color: themeUnit.icon }} defaultHref="/home"
+            <IonBackButton text={isIOS ? from : ''} style={{ color: '#436af2' }} defaultHref="/home"
             ></IonBackButton>
           </IonButtons>
         </IonToolbar>
@@ -52,7 +65,13 @@ const EditTodoTask: React.FC<TodoPageProps> = ({ match }) => {
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        content
+        <IonList>
+          <IonItem button detail={false}>
+            <IonLabel style={{
+              height: 100,
+            }}>Add Note</IonLabel>
+          </IonItem>
+        </IonList>
       </IonContent>
       <IonFooter mode="ios" className="ion-no-border">
         footer

@@ -5,3 +5,14 @@ ion-header {
 ion-toolbar {
   --background: transparent;
 }
+
+
+ion-item {
+  --ion-item-activated: #436af2;
+}
+
+@media (prefers-color-scheme: dark) {
+  ion-item {
+    --ion-item-activated: white;
+  }
+}

@@ -1,4 +1,4 @@
-import { Redirect, Route, Switch } from 'react-router-dom'
+import { Redirect, Route } from 'react-router-dom'
 import { IonApp, IonRouterOutlet, isPlatform, setupIonicReact } from '@ionic/react'
 import Home from './pages/Home'
 import Search from './pages/Search'
@@ -63,9 +63,9 @@ const App: React.FC = () => {
         <IonReactRouter>
           {!isIOS ? <IonRouterOutlet>
             {routes}
-          </IonRouterOutlet> : <Switch>
+          </IonRouterOutlet> : <IonRouterOutlet animated={false}>
             {routes}
-          </Switch>}
+          </IonRouterOutlet>}
         </IonReactRouter>
       </IonApp>
     </ThemeProvider>
