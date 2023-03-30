@@ -41,7 +41,8 @@ const getItems = (count: number): TodoTask[] =>
     id: `list-${k}`,
     title: `List ${k}`,
     order: count - k,
-    completed: false
+    completed: false,
+    note: `note ${k}`
   }))
 
 type TodoPageProps = RouteComponentProps<{
@@ -416,6 +417,7 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
                   title: currentText,
                   order: tasks.length,
                   completed: false,
+                  note: '',
                 })
                 setCurrentText('')
                 scrollToTop()

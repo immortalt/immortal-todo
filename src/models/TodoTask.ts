@@ -3,4 +3,5 @@ export type TodoTask = {
   title: string;
   order: number;
   completed: boolean;
+  note: string;
 }

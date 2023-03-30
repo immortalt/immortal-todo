@@ -1,5 +1,6 @@
 import {
   IonBackButton,
+  IonButton,
   IonButtons,
   IonContent,
   IonFooter,
@@ -7,11 +8,14 @@ import {
   IonItem,
   IonLabel,
   IonList,
+  IonModal,
   IonPage,
+  IonTextarea,
+  IonTitle,
   IonToolbar,
   isPlatform
 } from '@ionic/react'
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { type RouteComponentProps } from 'react-router'
 import './index.scss'
 import useIsDark from '../../hooks/useIsDark'
@@ -39,17 +43,42 @@ const EditTodoTask: React.FC<TodoPageProps> = ({ match }) => {
   useEffect(() => {
     setStatusbarColor(isDark ? '#090909' : '#ffffff')
   }, [themeUnit.background])
-  const onTaskChange = (t: TodoTask) => {
-    setTask(t)
-  }
-  const [task, setTask] = React.useState({
+  const [task, setTask] = React.useState<TodoTask>({
     id: '1',
     title: 'task1',
     completed: false,
-    order: 1
+    order: 1,
+    note: 'note xxxx yyyy',
   })
+  const onTaskChange = (task: TodoTask) => {
+    setTask(task)
+  }
+  const editTextModal = useRef<HTMLIonModalElement>(null)
+  const [presentingElement, setPresentingElement] = useState<HTMLElement | undefined>(undefined)
+  const noteTextArea = useRef<HTMLIonTextareaElement>(null)
+  useEffect(() => {
+    setPresentingElement(page.current)
+  }, [])
+  const page = useRef(undefined)
+  const [isEditNoteModalOpen, setIsEditNoteModalOpen] = useState(false)
+  const [isPreviewNote, setIsPreviewNote] = useState(false)
+  const [note, setNote] = useState(task.note || '')
+  const onEditNoteDone = () => {
+    console.log(noteTextArea.current?.value)
+    setTask({
+      ...task,
+      note: note,
+    })
+  }
+  useEffect(() => {
+    if (isEditNoteModalOpen) {
+      setStatusbarColor('black')
+    } else {
+      setStatusbarColor(isDark ? '#090909' : '#ffffff')
+    }
+  }, [isEditNoteModalOpen])
   return (
-    <IonPage>
+    <IonPage ref={page}>
       <IonHeader style={{ background: isDark ? '#090909' : 'white' }} className="ion-no-border header">
         <IonToolbar>
           <IonButtons slot="start">
@@ -61,19 +90,51 @@ const EditTodoTask: React.FC<TodoPageProps> = ({ match }) => {
         </IonToolbar>
         <IonToolbar style={{
           paddingLeft: 4,
-          paddingRight: 4
         }}>
           <EditableTaskItem task={task} radioColor={themeUnit.icon} onChange={onTaskChange}></EditableTaskItem>
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
         <IonList>
-          <IonItem button detail={false}>
+          <IonItem onClick={() => {
+            setIsEditNoteModalOpen(true)
+          }} button detail={false}>
             <IonLabel style={{
               height: 100,
-            }}>Add Note</IonLabel>
+            }}>{task.note ? <pre> {task.note}</pre> : 'Add Note'}</IonLabel>
           </IonItem>
         </IonList>
+
+        <IonModal ref={editTextModal} isOpen={isEditNoteModalOpen}
+                  presentingElement={presentingElement}>
+          <IonHeader>
+            <IonToolbar>
+              <IonButtons slot="start">
+                <IonButton
+                  onClick={() => setIsPreviewNote(!isPreviewNote)}>{isPreviewNote ? 'Edit' : 'Preview'}</IonButton>
+              </IonButtons>
+              <IonTitle>Note</IonTitle>
+              <IonButtons slot="end">
+                <IonButton strong={true}
+                           onClick={() => {
+                             setIsEditNoteModalOpen(false)
+                             onEditNoteDone()
+                           }}>
+                  Done
+                </IonButton>
+              </IonButtons>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent className="ion-padding">
+            <IonItem>
+              <IonTextarea autofocus style={{ '--border-width': 0 }} rows={20} autoGrow value={note}
+                           onIonInput={(e) => {
+                             setNote(e.target.value || '')
+                           }}
+                           placeholder="Add Your Note (Markdown Format)"/>
+            </IonItem>
+          </IonContent>
+        </IonModal>
       </IonContent>
       <IonFooter mode="ios" className="ion-no-border">
         footer
