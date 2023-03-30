@@ -51,16 +51,18 @@ const EditTodoTask: React.FC<TodoPageProps> = ({ match }) => {
   return (
     <IonPage>
       <IonHeader style={{ background: isDark ? '#090909' : 'white' }} className="ion-no-border header">
-        <IonToolbar style={{
-          '--min-height': 30,
-          height: 39
-        }}>
+        <IonToolbar>
           <IonButtons slot="start">
-            <IonBackButton text={isIOS ? from : ''} style={{ color: '#436af2' }} defaultHref="/home"
+            <IonBackButton text={isIOS ? from : ''} style={{
+              color: '#436af2',
+            }} defaultHref="/home"
             ></IonBackButton>
           </IonButtons>
         </IonToolbar>
-        <IonToolbar style={{ '--min-height': 20 }}>
+        <IonToolbar style={{
+          paddingLeft: 4,
+          paddingRight: 4
+        }}>
           <EditableTaskItem task={task} radioColor={themeUnit.icon} onChange={onTaskChange}></EditableTaskItem>
         </IonToolbar>
       </IonHeader>

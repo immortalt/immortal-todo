@@ -43,10 +43,6 @@ const EditableTaskItem: React.FC<TaskItemProps> = (
       fontWeight: 500,
       textDecoration: task.completed ? 'line-through' : 'none'
     },
-    chechBoxDiv: {
-      marginRight: 14,
-      marginLeft: 17
-    }
   }
 
   const [stared, setStared] = React.useState(false)

@@ -33,13 +33,13 @@ const TaskItem: React.FC<TaskItemProps> = (
       '--border-color-checked': color,
     },
     chechBoxDiv: {
-      marginRight: 20,
-      marginLeft: 17
+      marginRight: -6,
+      marginLeft: 0
     }
   }
   const [showCheckboxAnimation, setShowCheckboxAnimation] = React.useState(!checked)
   const animationTimerRef = useRef<any>()
-  return <div className={showCheckboxAnimation ? 'finished my-checkbox' : 'finished'}
+  return <div style={styles.chechBoxDiv} className={showCheckboxAnimation ? 'finished my-checkbox' : 'finished'}
               onTouchStart={(e) => {
                 e.stopPropagation()
               }}
