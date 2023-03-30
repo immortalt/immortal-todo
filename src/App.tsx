@@ -51,7 +51,7 @@ const App: React.FC = () => {
   const isDark = useIsDark()
   const isIOS = isPlatform('ios')
   const routes = <>
-    <Route exact path="/task/:id" component={EditTodoTask}/>
+    <Route exact path="/task/:id/:theme/:from" component={EditTodoTask}/>
     <Route exact path="/todo/:id/:theme" component={TodoList}/>
     <Route exact path="/home" component={Home}/>
     <Route exact path="/search" component={Search}/>

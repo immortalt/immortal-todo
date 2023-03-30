@@ -34,6 +34,7 @@ type TaskItemsProps = {
   movingStatus: { index: number, isInCompleted: boolean }
   onMoveTask: (index: number, isInCompleted: boolean) => void
   onFinishTask: (task: TodoTask, completed: boolean) => void
+  onEditTask: (task: TodoTask) => void
   isInCompleted: boolean,
   taskLength: number,
 }
@@ -44,6 +45,7 @@ const TaskItems: React.FC<TaskItemsProps> = ({
   movingStatus,
   onMoveTask: onMoveTaskRoot,
   onFinishTask,
+  onEditTask,
   isInCompleted,
   taskLength,
 }) => {
@@ -111,13 +113,14 @@ const TaskItems: React.FC<TaskItemsProps> = ({
                       }
                     }
                   }
-                  return <TaskItem onMoveTask={onMoveTask}
-                                   className={isInCompleted ? 'completed-task-item' + moveClassname : 'task-item' + moveClassname}
-                                   task={item}
-                                   radioColor={radioColor} snapshot={snapshot}
-                                   provided={provided} onFinishTask={onFinishTask}
-                                   key={item.id} isInCompleted={isInCompleted} index={index} taskLength={taskLength}
-                  />
+                  return (<TaskItem onMoveTask={onMoveTask}
+                                    className={isInCompleted ? 'completed-task-item' + moveClassname : 'task-item' + moveClassname}
+                                    task={item}
+                                    radioColor={radioColor} snapshot={snapshot}
+                                    provided={provided} onFinishTask={onFinishTask}
+                                    onEditTask={onEditTask}
+                                    key={item.id} isInCompleted={isInCompleted} index={index} taskLength={taskLength}
+                  />)
                 }}
               </Draggable>
             ))}

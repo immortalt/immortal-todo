@@ -1,28 +1,58 @@
 import { IonBackButton, IonButtons, IonContent, IonFooter, IonHeader, IonPage, IonToolbar } from '@ionic/react'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { type RouteComponentProps } from 'react-router'
 import './index.scss'
+import useIsDark from '../../hooks/useIsDark'
+import { ListTheme, listThemes } from '../../theme/listThemes'
+import { setStatusbarColor } from '../../theme/utils'
+import EditableTaskItem from '../../components/EditableTaskItem'
+import { TodoTask } from '../../models/TodoTask'
 
 type TodoPageProps = RouteComponentProps<{
   id: string
+  theme: string
+  from: string
 }>
 
 const EditTodoTask: React.FC<TodoPageProps> = ({ match }) => {
   const {
     id = '',
+    theme = 'green',
+    from = 'Home'
   } = match.params
+  const isDark = useIsDark()
+  const listTheme: ListTheme = listThemes[theme]
+  const themeUnit = isDark ? listTheme.dark : listTheme.light
+  useEffect(() => {
+    setStatusbarColor(isDark ? '#090909' : '#ffffff')
+  }, [themeUnit.background])
+  const onTaskChange = (t: TodoTask) => {
+    setTask(t)
+  }
+  const [task, setTask] = React.useState({
+    id: '1',
+    title: 'task1',
+    completed: false,
+    order: 1
+  })
   return (
     <IonPage>
-      <IonHeader mode="ios" className="ion-no-border">
-        <IonToolbar>
+      <IonHeader style={{ background: isDark ? '#090909' : 'white' }} className="ion-no-border header">
+        <IonToolbar style={{
+          '--min-height': 30,
+          height: 39
+        }}>
           <IonButtons slot="start">
-            <IonBackButton defaultHref="/home"
+            <IonBackButton text={from} style={{ color: themeUnit.icon }} defaultHref="/home"
             ></IonBackButton>
           </IonButtons>
         </IonToolbar>
+        <IonToolbar style={{ '--min-height': 20 }}>
+          <EditableTaskItem task={task} radioColor={themeUnit.icon} onChange={onTaskChange}></EditableTaskItem>
+        </IonToolbar>
       </IonHeader>
       <IonContent fullscreen>
-        {id}
+        content
       </IonContent>
       <IonFooter mode="ios" className="ion-no-border">
         footer

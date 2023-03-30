@@ -7,7 +7,6 @@ import './TaskItem.scss'
 import { Checkbox } from '@mui/material'
 import StarBorderIcon from '@mui/icons-material/StarBorder'
 import StarIcon from '@mui/icons-material/Star'
-import { useHistory } from 'react-router-dom'
 
 type TaskItemProps = {
   snapshot: DraggableStateSnapshot,
@@ -16,6 +15,7 @@ type TaskItemProps = {
   radioColor: string
   onMoveTask: (index: number, isInCompleted: boolean) => void
   onFinishTask: (task: TodoTask, finished: boolean) => void
+  onEditTask: (task: TodoTask) => void
   index: number
   taskLength: number
   isInCompleted: boolean
@@ -29,6 +29,7 @@ const TaskItem: React.FC<TaskItemProps> = (
     radioColor,
     onMoveTask,
     onFinishTask,
+    onEditTask,
     className,
     isInCompleted,
     index,
@@ -101,7 +102,6 @@ const TaskItem: React.FC<TaskItemProps> = (
   const [enableRipple, setEnableRipple] = React.useState(false)
   const animationTimerRef = useRef<any>()
   const finishTimerRef = useRef<any>()
-  const history = useHistory()
   const navTimerrRef = useRef<any>()
   return <div
     className={'todotask-item ion-activatable ripple-parent' + (showMoveAnimation ? ` ${showMoveAnimation}` : '') + (className ? ' ' + className : '')}
@@ -121,7 +121,7 @@ const TaskItem: React.FC<TaskItemProps> = (
         navTimerrRef.current = null
       }
       navTimerrRef.current = setTimeout(() => {
-        history.push(`/task/${task.id}`)
+        onEditTask(task)
         navTimerrRef.current = null
       }, 200)
     }}
@@ -137,7 +137,6 @@ const TaskItem: React.FC<TaskItemProps> = (
            e.stopPropagation()
          }}
          onDoubleClick={(e) => {
-           console.log('double click')
            e.stopPropagation()
            e.preventDefault()
          }

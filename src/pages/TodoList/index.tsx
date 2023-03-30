@@ -54,6 +54,14 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
     id = 'tasks',
     theme = 'green'
   } = match.params
+  const getTitleText = (id: string): string => {
+    if (id === 'myday') {
+      return 'My Day'
+    } else {
+      return id
+    }
+  }
+  const history = useHistory()
   const [isDesktop, setIsDesktop] = useState(false)
   useEffect(() => {
     const mediaQuery = window.matchMedia('(hover: hover) and (pointer: fine)')
@@ -192,6 +200,7 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
       display: isAddingTask ? 'block' : 'none',
     },
   }
+
   const getTitle = (id: string) => {
     if (id === 'myday') {
       return <div style={styles.header}>
@@ -248,6 +257,9 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
       completed
     })
   }
+  const onEditTask = (task: TodoTask) => {
+    history.push(`/task/${task.id}/${theme}/${getTitleText(id)}`)
+  }
   const setTasks = (tasks: TodoTask[]) => {
     dispatch({
       type: 'setTasks',
@@ -284,7 +296,6 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
     moveClassname = ` move-${movingStatus.isInCompleted ? 'down' : 'up'}`
     console.log('moveClassname', moveClassname)
   }
-  const history = useHistory()
   return (
     <IonPage>
       <IonHeader mode="ios" className="ion-no-border" style={styles.header}>
@@ -346,6 +357,7 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
         </IonHeader>
         <TaskItems isInCompleted={false} tasks={tasks} theme={listTheme} setTasks={setTasks}
                    movingStatus={movingStatus} onMoveTask={onMoveTask} onFinishTask={onFinishTask}
+                   onEditTask={onEditTask}
                    taskLength={tasks.length}
         ></TaskItems>
         <Accordion expanded={completedExpanded === 'panel_completed'}
@@ -372,6 +384,7 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
           }}>
             <TaskItems isInCompleted={true} tasks={completedTasks} theme={listTheme} setTasks={setCompletedTasks}
                        movingStatus={movingStatus} onMoveTask={onMoveTask} onFinishTask={onFinishTask}
+                       onEditTask={onEditTask}
                        taskLength={tasks.length}></TaskItems>
           </AccordionDetails>
         </Accordion>
