@@ -13,7 +13,8 @@ import {
   IonTextarea,
   IonTitle,
   IonToolbar,
-  isPlatform
+  isPlatform,
+  useIonViewWillEnter
 } from '@ionic/react'
 import React, { useEffect, useRef, useState } from 'react'
 import { type RouteComponentProps } from 'react-router'
@@ -70,11 +71,12 @@ const EditTodoTask: React.FC<TodoPageProps> = ({ match }) => {
       note: note,
     })
   }
+  useIonViewWillEnter(() => {
+    setStatusbarColor(isDark ? '#090909' : '#ffffff')
+  })
   useEffect(() => {
-    if (isEditNoteModalOpen) {
+    if (isEditNoteModalOpen && isIOS) {
       setStatusbarColor('black')
-    } else {
-      setStatusbarColor(isDark ? '#090909' : '#ffffff')
     }
   }, [isEditNoteModalOpen])
   return (

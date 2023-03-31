@@ -16,7 +16,8 @@ import {
   IonRippleEffect,
   IonTitle,
   IonToolbar,
-  isPlatform
+  isPlatform,
+  useIonViewWillEnter
 } from '@ionic/react'
 import React, { createRef, useEffect, useReducer, useRef, useState } from 'react'
 import { addOutline, checkmarkCircleOutline, ellipsisHorizontal, ellipsisVertical, trashOutline } from 'ionicons/icons'
@@ -95,6 +96,9 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
   const isDark = useIsDark()
   const listTheme: ListTheme = listThemes[theme]
   const themeUnit = isDark ? listTheme.dark : listTheme.light
+  useIonViewWillEnter(() => {
+    setStatusbarColor(themeUnit.background)
+  })
   useEffect(() => {
     if (isAddingTask) {
       setStatusbarColor(darkenColor(themeUnit.background, 0.3))
