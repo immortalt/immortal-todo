@@ -401,11 +401,11 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
             marginRight: 15
           }} aria-readonly></IonCheckbox>}
           <IonInput
+            aria-label="add a task"
+            type="text"
             value={currentText}
-            onIonChange={(e) => {
-              if (e?.detail?.value) {
-                setCurrentText(e.detail.value)
-              }
+            onIonInput={(ev) => {
+              setCurrentText(`${ev.target.value}`)
             }}
             onIonFocus={() => {
               setIsAddingTask(true)

@@ -1,5 +1,5 @@
 import { IonCheckbox, IonLabel, IonRippleEffect } from '@ionic/react'
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import useIsDark from '../../hooks/useIsDark'
 import { TodoTask } from '../../models/TodoTask'
 import { DraggableProvided, DraggableStateSnapshot } from '../react-beautiful-dnd'
@@ -35,6 +35,7 @@ const TaskItem: React.FC<TaskItemProps> = (
     index,
     taskLength,
   }) => {
+
   const [checked, setChecked] = React.useState(task.completed)
   const isDark = useIsDark()
   const getTitleColor = () => {
@@ -65,10 +66,10 @@ const TaskItem: React.FC<TaskItemProps> = (
       '--transition': 'transform 2s cubic-bezier(0.4, 0, 0.2, 1)',
       // Unchecked
       '--border-color': isDark ? '#939393' : '#767678',
-      '--background': isDark ? '#212121' : '#FFFFFF',
+      '--checkbox-background': isDark ? '#212121' : '#FFFFFF',
       // Checked
       '--color-checked': isDark ? radioColor : 'black',
-      '--background-checked': radioColor,
+      '--checkbox-background-checked': radioColor,
       '--border-color-checked': radioColor,
     },
     title: {
@@ -79,8 +80,8 @@ const TaskItem: React.FC<TaskItemProps> = (
       color: getSubtitleColor(),
     },
     chechBoxDiv: {
-      marginRight: 20,
-      marginLeft: 17
+      marginRight: 2,
+      marginLeft: 0
     }
   }
   const getItemStyle = (isDragging: boolean, draggableStyle: any) => {
@@ -103,6 +104,42 @@ const TaskItem: React.FC<TaskItemProps> = (
   const animationTimerRef = useRef<any>()
   const finishTimerRef = useRef<any>()
   const navTimerrRef = useRef<any>()
+  useEffect(() => {
+    console.log(checked, task.completed)
+    if (checked != task.completed) {
+      console.log('trigger switch')
+      if (!task.completed) {
+        setShowCheckboxAnimation(true)
+      }
+      // play checkbox animation
+      if (animationTimerRef.current) {
+        clearTimeout(animationTimerRef.current)
+        animationTimerRef.current = null
+      }
+      // after 200ms, move the task
+      animationTimerRef.current = setTimeout(() => {
+        // show the item move animation
+        setShowMoveAnimation('move-item')
+        onMoveTask(index, isInCompleted)
+        if (finishTimerRef.current) {
+          clearTimeout(finishTimerRef.current)
+          finishTimerRef.current = null
+        }
+        // after 200ms, finish the task
+        finishTimerRef.current = setTimeout(() => {
+          onMoveTask(-1, false)
+          onFinishTask(task, !task.completed)
+          finishTimerRef.current = null
+        }, 200)
+        setShowCheckboxAnimation(false)
+        animationTimerRef.current = null
+      }, 200)
+    }
+  }, [task.completed, checked])
+  const switchStatus = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    setChecked(!checked)
+  }
   return <div
     className={'todotask-item ion-activatable ripple-parent' + (showMoveAnimation ? ` ${showMoveAnimation}` : '') + (className ? ' ' + className : '')}
     ref={provided.innerRef}
@@ -127,7 +164,7 @@ const TaskItem: React.FC<TaskItemProps> = (
     }}
   >
     {enableRipple && <IonRippleEffect style={{ borderRadius: 8 }}></IonRippleEffect>}
-    <div className={showCheckboxAnimation ? 'finished my-checkbox' : 'finished'}
+    <div style={{ marginRight: 2 }} className={showCheckboxAnimation ? 'finished my-checkbox' : 'finished'}
          onTouchStart={(e) => {
            setEnableRipple(false)
            e.stopPropagation()
@@ -141,48 +178,17 @@ const TaskItem: React.FC<TaskItemProps> = (
            e.preventDefault()
          }
          }
-         onClick={(e) => {
-           e.stopPropagation()
-           // prevent the quick click to stop the check process
-           if (checked == task.completed) {
-             setChecked(!task.completed)
-             // play checkbox animation
-             setShowCheckboxAnimation(true)
-             if (animationTimerRef.current) {
-               clearTimeout(animationTimerRef.current)
-               animationTimerRef.current = null
-             }
-             // after 200ms, move the task
-             animationTimerRef.current = setTimeout(() => {
-               // show the item move animation
-               setShowMoveAnimation('move-item')
-               onMoveTask(index, isInCompleted)
-               if (finishTimerRef.current) {
-                 clearTimeout(finishTimerRef.current)
-                 finishTimerRef.current = null
-               }
-               // after 200ms, finish the task
-               finishTimerRef.current = setTimeout(() => {
-                 onMoveTask(-1, false)
-                 onFinishTask(task, !task.completed)
-                 finishTimerRef.current = null
-               }, 200)
-               setShowCheckboxAnimation(false)
-               animationTimerRef.current = null
-             }, 200)
-           } else {
-             // alert("Open the task to edit it")
-           }
-         }}
+         onClick={switchStatus}
     >
-      <div className={`circle circle-1 ${checked ? 'checked' : ''}`
-      }></div>
+      <div className={`circle circle-1 ${checked ? 'checked' : ''}`}></div>
       <div className={`circle circle-2 ${checked ? 'checked' : ''}`}></div>
       <div className={`circle circle-3 ${checked ? 'checked' : ''}`}></div>
       <div className={`circle circle-4 ${checked ? 'checked' : ''}`}></div>
       <div className={`circle circle-5 ${checked ? 'checked' : ''}`}></div>
       <div className={`circle circle-6 ${checked ? 'checked' : ''}`}></div>
+      <div className="mask"></div>
       <IonCheckbox
+        aria-label="completed-checkbox"
         mode="ios" checked={checked}
         style={styles.radio}
       />

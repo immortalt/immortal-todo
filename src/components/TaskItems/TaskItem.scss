@@ -12,7 +12,7 @@
     border-radius: 50%;
     background-color: #6200ee;
     opacity: 0;
-    margin-left: 3px;
+    margin-left: 5px;
     margin-top: 0;
   }
 
@@ -60,8 +60,18 @@
 
   .checked {
     &.circle-1, &.circle-2, &.circle-3, &.circle-4, &.circle-5, &.circle-6 {
-      animation: checkbox-circle 0.3s ease;
+      animation: checkbox-circle 0.2s ease;
     }
+  }
+
+  .mask {
+    position: absolute;
+    width: calc(100% - 2px);
+    height: 100%;
+    z-index: 10;
+    top: 0;
+    left: 0;
+    background: transparent;
   }
 
   .checkbox-checked {
@@ -114,7 +124,6 @@
 .finished {
   order: 1;
   flex-shrink: 0;
-  margin-right: 0;
   height: 64px;
   width: 54px;
   display: flex;

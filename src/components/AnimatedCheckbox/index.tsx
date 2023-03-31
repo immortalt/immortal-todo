@@ -26,10 +26,10 @@ const TaskItem: React.FC<TaskItemProps> = (
       '--transition': 'transform 2s cubic-bezier(0.4, 0, 0.2, 1)',
       // Unchecked
       '--border-color': isDark ? '#939393' : '#767678',
-      '--background': isDark ? '#212121' : '#FFFFFF',
+      '--checkbox-background': isDark ? '#212121' : '#FFFFFF',
       // Checked
       '--color-checked': isDark ? color : 'black',
-      '--background-checked': color,
+      '--checkbox-background-checked': color,
       '--border-color-checked': color,
     },
     chechBoxDiv: {
@@ -73,10 +73,10 @@ const TaskItem: React.FC<TaskItemProps> = (
     <div className={`circle circle-4 ${checked ? 'checked' : ''}`}></div>
     <div className={`circle circle-5 ${checked ? 'checked' : ''}`}></div>
     <div className={`circle circle-6 ${checked ? 'checked' : ''}`}></div>
-    <IonCheckbox
-      mode="ios" checked={checked}
-      onIonChange={e => onChange(e.detail.checked)}
-      style={{ ...styles.radio, ...style }}
+    <IonCheckbox aria-label="completed"
+                 mode="ios" checked={checked}
+                 onIonChange={e => onChange(e.detail.checked)}
+                 style={{ ...styles.radio, ...style }}
     />
   </div>
 }

@@ -127,7 +127,8 @@ const EditTodoTask: React.FC<TodoPageProps> = ({ match }) => {
           </IonHeader>
           <IonContent className="ion-padding">
             <IonItem>
-              <IonTextarea autofocus style={{ '--border-width': 0 }} rows={20} autoGrow value={note}
+              <IonTextarea aria-label="Edit Note Textarea" autofocus style={{ '--border-width': 0 }} rows={20} autoGrow
+                           value={note}
                            onIonInput={(e) => {
                              setNote(e.target.value || '')
                            }}
