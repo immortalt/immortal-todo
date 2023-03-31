@@ -194,6 +194,7 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
       fontSize: 32,
       marginLeft: 9,
       marginRight: 11,
+      height: 44
     },
     newTaskInput: {
       '--placeholder-color': isAddingTask ? '#767678' : themeUnit.text,
@@ -400,12 +401,14 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
       <IonFooter mode="ios" className="ion-no-border" style={styles.footer}>
         <div style={styles.footerItem}>
           {!isAddingTask && <IonIcon style={styles.newTaskIcon} icon={addOutline}></IonIcon>}
-          {isAddingTask && <IonCheckbox style={{
-            marginLeft: 21,
-            marginRight: 15
-          }} aria-readonly></IonCheckbox>}
+          {isAddingTask && <div style={{
+            marginLeft: 18,
+            marginRight: 18,
+          }}>
+            <IonCheckbox aria-readonly></IonCheckbox>
+          </div>}
           <IonInput
-            aria-label="add a task"
+            aria-label="Add a task"
             type="text"
             value={currentText}
             onIonInput={(ev) => {

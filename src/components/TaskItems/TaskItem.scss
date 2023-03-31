@@ -121,6 +121,17 @@
   margin-bottom: 2px;
 }
 
+@media (pointer: fine) {
+  .todotask-item:hover {
+    background-color: rgb(248, 249, 255) !important;
+  }
+  @media (prefers-color-scheme: dark) {
+    .todotask-item:hover {
+      --todotask-item-hover: var(--ion-color-dark-shade) !important;
+    }
+  }
+}
+
 .finished {
   order: 1;
   flex-shrink: 0;

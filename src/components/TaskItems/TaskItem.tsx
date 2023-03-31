@@ -105,9 +105,7 @@ const TaskItem: React.FC<TaskItemProps> = (
   const finishTimerRef = useRef<any>()
   const navTimerrRef = useRef<any>()
   useEffect(() => {
-    console.log(checked, task.completed)
     if (checked != task.completed) {
-      console.log('trigger switch')
       if (!task.completed) {
         setShowCheckboxAnimation(true)
       }

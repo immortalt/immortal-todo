@@ -119,8 +119,6 @@ $move-distance: 66px;
     background-color: var(--background);
     height: 54px;
     color: var(--text);
-    margin-top: 10px;
-    margin-bottom: 12px;
     border-radius: 8px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
     display: flex;
@@ -146,3 +144,4 @@ $move-distance: 66px;
     --text: $dark-text;
   }
 }
+

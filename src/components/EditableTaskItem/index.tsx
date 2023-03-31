@@ -47,7 +47,7 @@ const EditableTaskItem: React.FC<TaskItemProps> = (
 
   const [stared, setStared] = React.useState(false)
   return <div
-    className={'todotask-item ion-activatable' + (className ? ' ' + className : '')}
+    className={'editable-todotask-item ion-activatable' + (className ? ' ' + className : '')}
     style={{
       background: 'transparent',
       height: 55,

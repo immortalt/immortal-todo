@@ -92,6 +92,7 @@ const EditTodoTask: React.FC<TodoPageProps> = ({ match }) => {
         </IonToolbar>
         <IonToolbar style={{
           paddingLeft: 4,
+          paddingRight: 4,
         }}>
           <EditableTaskItem task={task} radioColor={themeUnit.icon} onChange={onTaskChange}></EditableTaskItem>
         </IonToolbar>
