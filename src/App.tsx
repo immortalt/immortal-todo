@@ -50,22 +50,18 @@ const lightTheme = createTheme({
 const App: React.FC = () => {
   const isDark = useIsDark()
   const isIOS = isPlatform('ios')
-  const routes = <>
-    <Route exact path="/task/:id/:theme/:from" component={EditTodoTask}/>
-    <Route exact path="/todo/:id/:theme" component={TodoList}/>
-    <Route exact path="/home" component={Home}/>
-    <Route exact path="/search" component={Search}/>
-    <Route exact path="/">
-      <Redirect to="/home"/>
-    </Route></>
   return (<ThemeProvider theme={isDark ? darkTheme : lightTheme}>
       <IonApp>
         <IonReactRouter>
-          {!isIOS ? <IonRouterOutlet>
-            {routes}
-          </IonRouterOutlet> : <IonRouterOutlet animated={false}>
-            {routes}
-          </IonRouterOutlet>}
+          <IonRouterOutlet animated={!isIOS}>
+            <Route exact path="/task/:id/:theme/:from" component={EditTodoTask}/>
+            <Route exact path="/todo/:id/:theme" component={TodoList}/>
+            <Route exact path="/home" component={Home}/>
+            <Route exact path="/search" component={Search}/>
+            <Route exact path="/">
+              <Redirect to="/home"/>
+            </Route>
+          </IonRouterOutlet>
         </IonReactRouter>
       </IonApp>
     </ThemeProvider>
