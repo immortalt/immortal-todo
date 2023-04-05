@@ -1,5 +1,5 @@
 import { Redirect, Route } from 'react-router-dom'
-import { IonApp, IonRouterOutlet, isPlatform, setupIonicReact } from '@ionic/react'
+import { IonApp, IonRouterOutlet, isPlatform, setupIonicReact, } from '@ionic/react'
 import Home from './pages/Home'
 import Search from './pages/Search'
 import TodoList from './pages/TodoList'
@@ -28,6 +28,10 @@ import useIsDark from './hooks/useIsDark'
 import EditTodoTask from './pages/EditTodoTask'
 import './App.css'
 import { IonReactRouter } from '@ionic/react-router'
+/* React Query */
+import { QueryClient, QueryClientProvider, } from 'react-query'
+
+const queryClient = new QueryClient()
 
 setupIonicReact({
   swipeBackEnabled: false,
@@ -50,21 +54,28 @@ const lightTheme = createTheme({
 const App: React.FC = () => {
   const isDark = useIsDark()
   const isIOS = isPlatform('ios')
-  return (<ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-      <IonApp>
-        <IonReactRouter>
-          <IonRouterOutlet animated={!isIOS}>
-            <Route exact path="/task/:id/:theme/:from" component={EditTodoTask}/>
-            <Route exact path="/todo/:id/:theme" component={TodoList}/>
-            <Route exact path="/home" component={Home}/>
-            <Route exact path="/search" component={Search}/>
-            <Route exact path="/">
-              <Redirect to="/home"/>
-            </Route>
-          </IonRouterOutlet>
-        </IonReactRouter>
-      </IonApp>
-    </ThemeProvider>
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+        <IonApp>
+          <IonReactRouter>
+            <IonRouterOutlet animated={!isIOS}>
+              <Route
+                exact
+                path="/task/:id/:theme/:from"
+                component={EditTodoTask}
+              />
+              <Route exact path="/todo/:id/:theme" component={TodoList}/>
+              <Route exact path="/home" component={Home}/>
+              <Route exact path="/search" component={Search}/>
+              <Route exact path="/">
+                <Redirect to="/home"/>
+              </Route>
+            </IonRouterOutlet>
+          </IonReactRouter>
+        </IonApp>
+      </ThemeProvider>
+    </QueryClientProvider>
   )
 }
 

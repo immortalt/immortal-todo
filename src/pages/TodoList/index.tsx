@@ -1,6 +1,5 @@
 import {
   IonBackButton,
-  IonBackdrop,
   IonButton,
   IonButtons,
   IonCheckbox,
@@ -12,48 +11,32 @@ import {
   IonItem,
   IonLabel,
   IonList,
-  IonModal,
   IonPage,
   IonRippleEffect,
   IonTitle,
   IonToolbar,
-  createAnimation,
   isPlatform,
   useIonViewWillEnter,
-} from "@ionic/react";
-import React, { createRef, useEffect, useReducer, useState } from "react";
-import {
-  addOutline,
-  checkmarkCircleOutline,
-  ellipsisHorizontal,
-  ellipsisVertical,
-  trashOutline,
-} from "ionicons/icons";
-import { Menu, MenuItem, SwipeableDrawer } from "@mui/material";
-import { type RouteComponentProps } from "react-router";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import "./index.scss";
-import DelayDisplay from "../../components/DelayDisplay";
-import { type ListTheme, listThemes } from "../../theme/listThemes";
-import useIsDark from "../../hooks/useIsDark";
-import { darkenColor, lightenColor } from "./utils";
-import TaskItems from "../../components/TaskItems";
-import { TodoTask } from "../../models/TodoTask";
-import { setStatusbarColor } from "../../theme/utils";
-import { taskReducer } from "./reducer";
-import { Accordion, AccordionDetails, AccordionSummary } from "./Accordion";
-import { useHistory } from "react-router-dom";
-import Sheet from "react-modal-sheet";
-
-const getItems = (count: number): TodoTask[] =>
-  Array.from({ length: count }, (v, k) => k).map((k) => ({
-    id: `list-${k}`,
-    title: `List ${k}`,
-    order: count - k,
-    completed: false,
-    note: `note ${k}`,
-  }));
+} from '@ionic/react'
+import React, { createRef, useEffect, useReducer, useState } from 'react'
+import { addOutline, checkmarkCircleOutline, ellipsisHorizontal, ellipsisVertical, trashOutline, } from 'ionicons/icons'
+import { Menu, MenuItem } from '@mui/material'
+import { type RouteComponentProps } from 'react-router'
+import ListItemText from '@mui/material/ListItemText'
+import ListItemIcon from '@mui/material/ListItemIcon'
+import './index.scss'
+import DelayDisplay from '../../components/DelayDisplay'
+import { type ListTheme, listThemes } from '../../theme/listThemes'
+import useIsDark from '../../hooks/useIsDark'
+import { darkenColor, lightenColor } from './utils'
+import TaskItems from '../../components/TaskItems'
+import { TodoTask } from '../../models/TodoTask'
+import { setStatusbarColor } from '../../theme/utils'
+import { taskReducer } from './reducer'
+import { Accordion, AccordionDetails, AccordionSummary } from './Accordion'
+import { useHistory } from 'react-router-dom'
+import Sheet from 'react-modal-sheet'
+import { useTodoTasks } from '../../query'
 
 type TodoPageProps = RouteComponentProps<{
   id: string;
@@ -61,138 +44,159 @@ type TodoPageProps = RouteComponentProps<{
 }>;
 
 const TodoList: React.FC<TodoPageProps> = ({ match }) => {
-  const { id = "tasks", theme = "green" } = match.params;
+  const {
+    id = 'tasks',
+    theme = 'green'
+  } = match.params
   const getTitleText = (id: string): string => {
-    if (id === "myday") {
-      return "My Day";
+    if (id === 'myday') {
+      return 'My Day'
     } else {
-      return id;
+      return id
     }
-  };
-  const history = useHistory();
-  const [isDesktop, setIsDesktop] = useState(false);
+  }
+  const history = useHistory()
+  const [isDesktop, setIsDesktop] = useState(false)
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
-    setIsDesktop(mediaQuery.matches);
-  }, []);
-  const isIOS = isPlatform("ios");
-  const isAndroid = isPlatform("android");
-  const isPWA = isPlatform("pwa");
-  const [isAddingTask, setIsAddingTask] = React.useState(false);
-  const [currentText, setCurrentText] = React.useState("");
-
-  const [{ tasks, completedTasks }, dispatch] = useReducer(taskReducer, {
-    tasks: getItems(5).sort((a, b) => b.order - a.order),
+    const mediaQuery = window.matchMedia('(hover: hover) and (pointer: fine)')
+    setIsDesktop(mediaQuery.matches)
+  }, [])
+  const isIOS = isPlatform('ios')
+  const isAndroid = isPlatform('android')
+  const isPWA = isPlatform('pwa')
+  const [isAddingTask, setIsAddingTask] = React.useState(false)
+  const [currentText, setCurrentText] = React.useState('')
+  // data and reducers
+  const {
+    data,
+  } = useTodoTasks()
+  const [{
+    tasks,
+    completedTasks
+  }, dispatch] = useReducer(taskReducer, {
+    tasks: data || [],
     completedTasks: [],
-  });
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  })
+  useEffect(() => {
+    if (data) {
+      dispatch({
+        type: 'setTasks',
+        tasks: data.filter(t => !t.completed) || []
+      })
+      dispatch({
+        type: 'setCompletedTasks',
+        tasks: data.filter(t => t.completed) || []
+      })
+    }
+  }, [data])
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
   const handleMenu = (event: React.MouseEvent<HTMLElement>): void => {
     if (!isIOS) {
-      setAnchorEl(event.currentTarget);
+      setAnchorEl(event.currentTarget)
     } else {
-      setIsSheetModalOpen(true);
+      setIsSheetModalOpen(true)
     }
-  };
+  }
   const handleClose = () => {
-    setAnchorEl(null);
-  };
-  const isDark = useIsDark();
-  const listTheme: ListTheme = listThemes[theme];
-  const themeUnit = isDark ? listTheme.dark : listTheme.light;
+    setAnchorEl(null)
+  }
+  const isDark = useIsDark()
+  const listTheme: ListTheme = listThemes[theme]
+  const themeUnit = isDark ? listTheme.dark : listTheme.light
   useIonViewWillEnter(() => {
-    setStatusbarColor(themeUnit.background);
-  });
+    setStatusbarColor(themeUnit.background)
+  })
   useEffect(() => {
     if (isAddingTask) {
-      setStatusbarColor(darkenColor(themeUnit.background, 0.3));
+      setStatusbarColor(darkenColor(themeUnit.background, 0.3))
     } else {
-      setStatusbarColor(themeUnit.background);
+      setStatusbarColor(themeUnit.background)
     }
-  }, [themeUnit.background, isAddingTask]);
+  }, [themeUnit.background, isAddingTask])
   const getFooterItemBackground = () => {
     if (isDark) {
-      return "#212121";
+      return '#212121'
     } else {
       return themeUnit.reversed
         ? lightenColor(themeUnit.background)
-        : "rgba(0, 0, 0, 0.1)";
+        : 'rgba(0, 0, 0, 0.1)'
     }
-  };
+  }
   const getContentStyle = () => {
     const style = {
-      "--background": themeUnit.background,
-      "--padding-top": "0px",
-    };
+      '--background': themeUnit.background,
+      '--padding-top': '0px',
+    }
     if (isAddingTask && !isDesktop) {
       if (isIOS) {
         if (isPWA) {
-          style["--padding-top"] = "330px";
+          style['--padding-top'] = '330px'
         } else {
           // in browser
-          style["--padding-top"] = "255px";
+          style['--padding-top'] = '255px'
         }
       } else if (isAndroid) {
         if (isPWA) {
-          style["--padding-top"] = "230px";
+          style['--padding-top'] = '230px'
         } else {
           // in browser
-          style["--padding-top"] = "230px";
+          style['--padding-top'] = '230px'
         }
       }
     }
-    return style;
-  };
+    return style
+  }
   const getFooterItemStyle = () => {
     if (!isAddingTask) {
       return {
-        display: "flex",
-        alignItems: "center",
+        display: 'flex',
+        alignItems: 'center',
         background: getFooterItemBackground(),
         marginLeft: 10,
         marginRight: 10,
         borderRadius: 8,
-        height: "54px",
+        height: '54px',
         color: themeUnit.text,
         marginTop: 10,
         marginBottom: isPWA && !isDesktop && !isAndroid ? 49 : 12,
-      };
+      }
     }
     // isAddingTask
     return {
-      display: "flex",
-      alignItems: "center",
-      background: isDark ? "#212121" : "white",
+      display: 'flex',
+      alignItems: 'center',
+      background: isDark ? '#212121' : 'white',
       marginLeft: 0,
       marginRight: 0,
       height: !isDesktop ? 54 : 70,
-      color: isDark ? "white" : "#767678",
-      boxShadow: "0px 8px 12px rgba(0, 0, 0, 1)",
+      color: isDark ? 'white' : '#767678',
+      boxShadow: '0px 8px 12px rgba(0, 0, 0, 1)',
       marginTop: 1,
       marginBottom: -1,
-      borderRadius: "8px 8px 0 0",
-    };
-  };
+      borderRadius: '8px 8px 0 0',
+    }
+  }
   const styles = {
     header: {
       color: themeUnit.text,
-      "--background": themeUnit.background,
-      "--color": themeUnit.text,
+      '--background': themeUnit.background,
+      '--color': themeUnit.text,
     },
     contentHeader: {
       color: themeUnit.text,
-      "--background": themeUnit.background,
-      "--color": themeUnit.text,
-      "--min-height": id === "myday" ? "65px" : "40px",
+      '--background': themeUnit.background,
+      '--color': themeUnit.text,
+      '--min-height': id === 'myday' ? '65px' : '40px',
     },
     toolbar: {
-      "--background": themeUnit.background,
-      "--color": themeUnit.text,
+      '--background': themeUnit.background,
+      '--color': themeUnit.text,
     },
     iconButton: { color: themeUnit.text },
     content: getContentStyle(),
     footer: {
       bottom: -1,
-      background: isAddingTask ? "transparent" : themeUnit.background,
+      background: isAddingTask ? 'transparent' : themeUnit.background,
     },
     footerItem: getFooterItemStyle(),
     newTaskIcon: {
@@ -202,101 +206,100 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
       height: 44,
     },
     newTaskInput: {
-      "--placeholder-color": isAddingTask ? "#767678" : themeUnit.text,
-      "--placeholder-opacity": 1,
+      '--placeholder-color': isAddingTask ? '#767678' : themeUnit.text,
+      '--placeholder-opacity': 1,
       borderWidth: 0,
     },
     footerItem2: {
-      "--min-height": "10px",
-      display: isAddingTask ? "block" : "none",
+      '--min-height': '10px',
+      display: isAddingTask ? 'block' : 'none',
     },
-  };
+  }
 
   const getTitle = (id: string) => {
-    if (id === "myday") {
+    if (id === 'myday') {
       return (
         <div style={styles.header}>
           <div className="today">My Day</div>
           <div className="today-date">{new Date().toLocaleDateString()}</div>
         </div>
-      );
+      )
     }
-    return <div>{id}</div>;
-  };
-  const title = getTitle(id);
+    return <div>{id}</div>
+  }
+  const title = getTitle(id)
   const addTask = (task: TodoTask) => {
     // add task to tasks
     dispatch({
-      type: "add",
+      type: 'add',
       task,
-    });
-  };
+    })
+  }
   // modal related
-  const [IsSheetModalOpen, setIsSheetModalOpen] = useState(false);
-  const contentRef = createRef<HTMLIonContentElement>();
+  const [IsSheetModalOpen, setIsSheetModalOpen] = useState(false)
+  const contentRef = createRef<HTMLIonContentElement>()
 
-  function scrollToTop() {
+  function scrollToTop () {
     // Passing a duration to the method makes it so the scroll slowly
     // goes to the top instead of instantly
-    contentRef.current?.scrollToTop(500);
+    contentRef.current?.scrollToTop(500)
   }
 
   const onFinishTask = (task: TodoTask, completed: boolean) => {
     dispatch({
-      type: "complete",
+      type: 'complete',
       task,
       completed,
-    });
-  };
+    })
+  }
   const onEditTask = (task: TodoTask) => {
-    history.push(`/task/${task.id}/${theme}/${getTitleText(id)}`);
-  };
+    history.push(`/task/${task.id}/${theme}/${getTitleText(id)}`)
+  }
   const setTasks = (tasks: TodoTask[]) => {
     dispatch({
-      type: "setTasks",
+      type: 'setTasks',
       tasks,
-    });
-  };
+    })
+  }
   const setCompletedTasks = (tasks: TodoTask[]) => {
     dispatch({
-      type: "setCompletedTasks",
+      type: 'setCompletedTasks',
       tasks,
-    });
-  };
+    })
+  }
   const [completedExpanded, setCompletedExpanded] = React.useState<
     string | false
-  >("panel_completed");
+  >('panel_completed')
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, newExpanded: boolean) => {
-      setCompletedExpanded(newExpanded ? panel : false);
-    };
+      setCompletedExpanded(newExpanded ? panel : false)
+    }
   const [movingStatus, setMovingStatus] = React.useState<{
     index: number;
     isInCompleted: boolean;
   }>({
     index: -1,
     isInCompleted: false,
-  });
+  })
   const onMoveTask = (index: number, isInCompleted: boolean) => {
     setMovingStatus({
       index,
       isInCompleted,
-    });
-  };
-  let moveClassname = "";
+    })
+  }
+  let moveClassname = ''
   if (movingStatus.index !== -1) {
-    moveClassname = ` move-${movingStatus.isInCompleted ? "down" : "up"}`;
-    console.log("moveClassname", moveClassname);
+    moveClassname = ` move-${movingStatus.isInCompleted ? 'down' : 'up'}`
   }
   return (
-    <IonPage key={"bottom"}>
+    <IonPage key={'bottom'}>
       <IonHeader mode="ios" className="ion-no-border" style={styles.header}>
-        <IonToolbar mode={isIOS ? "ios" : "md"} style={styles.toolbar}>
+        <IonToolbar mode={isIOS ? 'ios' : 'md'} style={styles.toolbar}>
           <IonButtons slot="start">
             <IonBackButton
               style={styles.iconButton}
               defaultHref="/home"
-              text={isIOS ? "Lists" : ""}
+              text={isIOS ? 'Lists' : ''}
             ></IonBackButton>
           </IonButtons>
           <IonTitle style={styles.header} className="page-header">
@@ -319,13 +322,13 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
             id="menu-appbar"
             anchorEl={anchorEl}
             anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
+              vertical: 'top',
+              horizontal: 'right',
             }}
             keepMounted
             transformOrigin={{
-              vertical: "top",
-              horizontal: "right",
+              vertical: 'top',
+              horizontal: 'right',
             }}
             open={Boolean(anchorEl)}
             onClose={handleClose}
@@ -361,97 +364,99 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
             <IonTitle size="large">{title}</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <TaskItems
-          isInCompleted={false}
-          tasks={tasks}
-          theme={listTheme}
-          setTasks={setTasks}
-          movingStatus={movingStatus}
-          onMoveTask={onMoveTask}
-          onFinishTask={onFinishTask}
-          onEditTask={onEditTask}
-          taskLength={tasks.length}
-        ></TaskItems>
-        <Accordion
-          expanded={completedExpanded === "panel_completed"}
-          onChange={handleChange("panel_completed")}
-          style={{
-            background: themeUnit.background,
-            borderWidth: 0,
-            display: completedTasks.length > 0 ? "block" : "none",
-          }}
-        >
-          <AccordionSummary
-            className={
-              "ion-activatable ripple-parent rounded-rectangle" + moveClassname
-            }
+        <>
+          <TaskItems
+            isInCompleted={false}
+            tasks={tasks}
+            theme={listTheme}
+            setTasks={setTasks}
+            movingStatus={movingStatus}
+            onMoveTask={onMoveTask}
+            onFinishTask={onFinishTask}
+            onEditTask={onEditTask}
+            taskLength={tasks.length}
+          ></TaskItems>
+          <Accordion
+            expanded={completedExpanded === 'panel_completed'}
+            onChange={handleChange('panel_completed')}
             style={{
               background: themeUnit.background,
               borderWidth: 0,
+              display: completedTasks.length > 0 ? 'block' : 'none',
             }}
-            iconColor={isDark ? themeUnit.text : "white"}
-            aria-controls="panel1d-content"
-            id="panel1d-header"
           >
-            <IonRippleEffect></IonRippleEffect>
-            <div
+            <AccordionSummary
+              className={
+                'ion-activatable ripple-parent rounded-rectangle' + moveClassname
+              }
               style={{
-                color: themeUnit.text,
-                fontWeight: 500,
+                background: themeUnit.background,
+                borderWidth: 0,
+              }}
+              iconColor={isDark ? themeUnit.text : 'white'}
+              aria-controls="panel1d-content"
+              id="panel1d-header"
+            >
+              <IonRippleEffect></IonRippleEffect>
+              <div
+                style={{
+                  color: themeUnit.text,
+                  fontWeight: 500,
+                }}
+              >
+                Completed {completedTasks.length}
+              </div>
+            </AccordionSummary>
+            <AccordionDetails
+              style={{
+                background: themeUnit.background,
+                borderWidth: 0,
+                padding: 0,
               }}
             >
-              Completed {completedTasks.length}
-            </div>
-          </AccordionSummary>
-          <AccordionDetails
-            style={{
-              background: themeUnit.background,
-              borderWidth: 0,
-              padding: 0,
-            }}
-          >
-            <TaskItems
-              isInCompleted={true}
-              tasks={completedTasks}
-              theme={listTheme}
-              setTasks={setCompletedTasks}
-              movingStatus={movingStatus}
-              onMoveTask={onMoveTask}
-              onFinishTask={onFinishTask}
-              onEditTask={onEditTask}
-              taskLength={tasks.length}
-            ></TaskItems>
-          </AccordionDetails>
-        </Accordion>
+              <TaskItems
+                isInCompleted={true}
+                tasks={completedTasks}
+                theme={listTheme}
+                setTasks={setCompletedTasks}
+                movingStatus={movingStatus}
+                onMoveTask={onMoveTask}
+                onFinishTask={onFinishTask}
+                onEditTask={onEditTask}
+                taskLength={tasks.length}
+              ></TaskItems>
+            </AccordionDetails>
+          </Accordion>
+        </>
         <Sheet
           snapPoints={[0.4, 0]}
           isOpen={IsSheetModalOpen}
           onClose={() => setIsSheetModalOpen(false)}
         >
           <Sheet.Container>
-            <Sheet.Header />
+            <Sheet.Header/>
             <Sheet.Content>
-              <IonToolbar style={{ marginTop: -10 }} color={"transparent"}>
+              <IonToolbar style={{ marginTop: -10 }} color={'transparent'}>
                 <IonTitle>List Options</IonTitle>
                 <IonButtons slot="end">
                   <IonButton onClick={() => setIsSheetModalOpen(false)}>
-                    <span style={{ color: "#436af2" }}>Done</span>
+                    <span style={{ color: '#436af2' }}>Done</span>
                   </IonButton>
                 </IonButtons>
               </IonToolbar>
               <IonList>
-                <IonItem detail={false} lines={"none"} button>
+                <IonItem detail={false} lines={'none'} button>
                   <IonIcon
                     slot="start"
-                    style={{ color: "#e42b2d" }}
+                    style={{ color: '#e42b2d' }}
                     icon={trashOutline}
                   ></IonIcon>
-                  <IonLabel style={{ color: "#e42b2d" }}>Delete List</IonLabel>
+                  <IonLabel style={{ color: '#e42b2d' }}>Delete List</IonLabel>
                 </IonItem>
               </IonList>
             </Sheet.Content>
           </Sheet.Container>
-          <Sheet.Backdrop onTap={() => setIsSheetModalOpen(false)} />
+          <Sheet.Backdrop onTap={() => setIsSheetModalOpen(false)}/>
         </Sheet>
         {isAddingTask && <div className="add-task-mask"></div>}
       </IonContent>
@@ -467,7 +472,7 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
                 marginRight: 18,
               }}
             >
-              <IonCheckbox aria-readonly></IonCheckbox>
+              <IonCheckbox aria-label="add task checkbox" aria-readonly></IonCheckbox>
             </div>
           )}
           <IonInput
@@ -475,26 +480,26 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
             type="text"
             value={currentText}
             onIonInput={(ev) => {
-              setCurrentText(`${ev.target.value}`);
+              setCurrentText(`${ev.target.value}`)
             }}
             onIonFocus={() => {
-              setIsAddingTask(true);
+              setIsAddingTask(true)
             }}
             onKeyDown={(e) => {
-              if (e.key === "Enter") {
+              if (e.key === 'Enter') {
                 addTask({
                   id: new Date().getTime().toString(),
                   title: currentText,
                   order: tasks.length,
                   completed: false,
-                  note: "",
-                });
-                setCurrentText("");
-                scrollToTop();
+                  note: '',
+                })
+                setCurrentText('')
+                scrollToTop()
               }
             }}
             onIonBlur={() => {
-              setIsAddingTask(false);
+              setIsAddingTask(false)
             }}
             style={styles.newTaskInput}
             placeholder="Add a Task"
@@ -502,7 +507,7 @@ const TodoList: React.FC<TodoPageProps> = ({ match }) => {
         </div>
       </IonFooter>
     </IonPage>
-  );
-};
+  )
+}
 
-export default TodoList;
+export default TodoList
