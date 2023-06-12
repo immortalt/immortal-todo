@@ -1,0 +1,68 @@
+.editable-todotask-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  font-family: var(--ion-font-family, inherit);
+  text-align: initial;
+  text-decoration: none;
+  overflow: hidden;
+  box-sizing: border-box;
+  border-radius: 8px;
+  height: 64px;
+  cursor: default;
+  margin-bottom: 2px;
+}
+
+.editable-todotask-item:hover {
+  --todotask-item-hover: transparent !important;
+}
+
+
+.finished {
+  order: 1;
+  flex-shrink: 0;
+  margin-right: -4px;
+  height: 64px;
+  width: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.titles {
+  order: 2;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.favorite {
+  order: 3;
+  flex-shrink: 0;
+  margin-right: 10px;
+}
+
+.task-item-title {
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-item-subtitle {
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+input {
+  background: transparent;
+  border-color: transparent;
+  outline: transparent;
+}
+
+

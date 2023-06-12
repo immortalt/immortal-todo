@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <meta id="status-bar-color" name="theme-color" content="white">
+    <title>Immortal Todo</title>
+    <style>
+        * {
+            touch-action: pan-x pan-y;
+            user-select: none;
+        }
+    </style>
+    <script>
+        document.addEventListener('touchstart', function (event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, {passive: false});
+
+        // let lastTouchEnd = 0;
+        // document.addEventListener('touchend', (event) => {
+        //     const now = new Date().getTime();
+        //     if (now - lastTouchEnd <= 300) {
+        //         event.preventDefault();
+        //     }
+        //     lastTouchEnd = now;
+        // }, false);
+
+        document.addEventListener('gesturestart', function (event) {
+            event.preventDefault();
+        });
+    </script>
+    <base href="/"/>
+
+    <meta name="color-scheme" content="light dark"/>
+    <meta
+            name="viewport"
+            content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="msapplication-tap-highlight" content="no"/>
+
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json"/>
+
+    <link rel="shortcut icon" type="image/png" href="%PUBLIC_URL%/assets/icon/favicon.png"/>
+
+    <!-- add to homescreen for ios -->
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-title" content="Immortal Todo"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+</head>
+
+<body>
+<div id="root"></div>
+</body>
+
+</html>

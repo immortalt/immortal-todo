@@ -1,0 +1,7 @@
+{
+  "name": "immortal-todo",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
