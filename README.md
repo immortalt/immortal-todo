@@ -8,5 +8,5 @@ You only need to have a Chrome browser on your computer, and you can also create
 Ionic Framework : @ionic/react 7.0.0
 React: ^18.2.0
 ## Demo video
-https://github.com/immortalt/immortal-todo/assets/17811951/d0314485-21d8-451f-904e-5f7f3f60b02e
+https://github.com/immortalt/immortal-todo/assets/17811951/ea0a2529-17e5-4f6a-b2a8-2f1bc0609d98
 
